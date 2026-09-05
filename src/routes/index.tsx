@@ -1,24 +1,38 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  FinalCta,
+  Hero,
+  Process,
+  Testimonials,
+  WhyStackweb,
+  Work,
+} from "@/components/site/sections";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const title = "Stackweb — Custom websites, built on demand";
+const description =
+  "Stackweb is a web design studio building custom, high-performance websites for brands that care how they look. See selected work and start a project.";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+    ],
+  }),
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Home() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Hero />
+      <Work />
+      <Process />
+      <WhyStackweb />
+      <Testimonials />
+      <FinalCta />
+    </>
   );
 }
