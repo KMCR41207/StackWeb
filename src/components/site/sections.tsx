@@ -18,30 +18,46 @@ import { projects } from "@/lib/site";
 
 export function Hero() {
   const reduced = useReducedMotion();
+  const textRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const fit = () => {
+      const el = textRef.current;
+      if (!el) return;
+      const parent = el.parentElement;
+      if (!parent) return;
+      // reset to measure natural size
+      el.style.fontSize = "10rem";
+      const ratio = parent.clientWidth / el.scrollWidth;
+      el.style.fontSize = `${ratio * 10}rem`;
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
 
   return (
     <>
-      {/* Full-viewport STACKWEB wordmark */}
-      <section className="relative flex h-screen w-full items-center justify-start overflow-hidden">
-        {/* Gateway-flow canvas background */}
+      {/* Full-viewport STACKWEB wordmark with gateway-flow behind */}
+      <section className="relative flex h-screen w-full items-center overflow-hidden">
         <GatewayFlow />
 
-        {/* STACKWEB — sized to fill viewport width */}
-        <motion.h1
-          className="display relative z-10 leading-none whitespace-nowrap select-none"
-          style={{ fontSize: "clamp(4.5rem, 19.5vw, 100vw)" }}
-          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          Stackweb
-        </motion.h1>
+        <div className="relative z-10 w-full overflow-hidden">
+          <motion.h1
+            ref={textRef}
+            className="display block leading-none whitespace-nowrap select-none w-full"
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Stackweb
+          </motion.h1>
+        </div>
       </section>
 
-      {/* Value-prop + subhead + CTAs + thumbnail strip */}
+      {/* Value-prop + subhead + CTAs + thumbnail strip — no canvas here */}
       <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-5 pb-16 sm:px-8 lg:pb-24">
-        <GatewayFlow />
-        <div className="relative z-10 mx-auto w-full max-w-[110rem]">
+        <div className="mx-auto w-full max-w-[110rem]">
 
           {/* Value-prop headline */}
           <motion.p
