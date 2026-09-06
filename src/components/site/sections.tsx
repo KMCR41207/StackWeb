@@ -18,43 +18,23 @@ import { projects } from "@/lib/site";
 
 export function Hero() {
   const reduced = useReducedMotion();
-  const h1Ref = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    const fit = () => {
-      const el = h1Ref.current;
-      if (!el) return;
-      // Reset transform first so we measure the natural rendered width
-      el.style.transform = "";
-      const naturalW = el.getBoundingClientRect().width;
-      const target = window.innerWidth * 0.98; // 98vw — fills edge to edge with tiny margin
-      const scale = target / naturalW;
-      el.style.transform = `scaleX(${scale})`;
-      el.style.transformOrigin = "center top";
-    };
-    // Run after fonts are guaranteed loaded
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(fit);
-    } else {
-      fit();
-    }
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, []);
 
   return (
     <>
       {/* Full-viewport STACKWEB wordmark with gateway-flow behind */}
-      <section className="relative flex h-screen w-full items-center justify-center overflow-hidden">
+      <section className="relative flex h-screen w-full items-center overflow-hidden">
         <GatewayFlow />
 
         <motion.h1
-          ref={h1Ref}
-          className="display relative z-10 leading-none whitespace-nowrap select-none text-center"
+          className="relative z-10 block w-full whitespace-nowrap select-none leading-none"
           style={{
-            fontSize: "clamp(6rem, 22vw, 22rem)",
-            letterSpacing: "-0.03em",
-            display: "inline-block",
+            fontFamily: "'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif",
+            fontWeight: 900,
+            fontSize: "clamp(6rem, 28vw, 28rem)",
+            letterSpacing: "-0.02em",
+            textTransform: "uppercase",
+            lineHeight: 0.9,
+            paddingLeft: "0.02em",
           }}
           initial={reduced ? { opacity: 1 } : { opacity: 0 }}
           animate={{ opacity: 1 }}
