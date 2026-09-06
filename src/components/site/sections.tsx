@@ -32,11 +32,10 @@ export function Hero() {
           style={{
             fontFamily: "'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif",
             fontWeight: 900,
-            fontSize: "clamp(6rem, 28vw, 28rem)",
+            fontSize: "clamp(4rem, 55vh, 55vh)",
             letterSpacing: "-0.02em",
             textTransform: "uppercase",
             lineHeight: 1,
-            overflow: "visible",
           }}
           initial={reduced ? { opacity: 1 } : { opacity: 0 }}
           animate={{ opacity: 1 }}
