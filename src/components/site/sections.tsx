@@ -26,7 +26,7 @@ export function Hero() {
         <GatewayFlow />
 
         <motion.h1
-          className="display relative z-10 w-full leading-none whitespace-nowrap select-none"
+          className="display relative z-10 w-full leading-none whitespace-nowrap select-none text-center"
           style={{ fontSize: "18.5vw" }}
           initial={reduced ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
