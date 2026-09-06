@@ -22,19 +22,21 @@ export function Hero() {
   return (
     <>
       {/* Full-viewport STACKWEB wordmark with gateway-flow behind */}
-      <section className="relative flex h-screen w-full items-center overflow-hidden">
+      <section className="relative flex h-screen w-full items-center overflow-x-hidden"
+        style={{ overflowY: "visible" }}
+      >
         <GatewayFlow />
 
         <motion.h1
-          className="relative z-10 block w-full whitespace-nowrap select-none leading-none"
+          className="relative z-10 block w-full whitespace-nowrap select-none"
           style={{
             fontFamily: "'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif",
             fontWeight: 900,
             fontSize: "clamp(6rem, 28vw, 28rem)",
             letterSpacing: "-0.02em",
             textTransform: "uppercase",
-            lineHeight: 0.9,
-            paddingLeft: "0.02em",
+            lineHeight: 1,
+            overflow: "visible",
           }}
           initial={reduced ? { opacity: 1 } : { opacity: 0 }}
           animate={{ opacity: 1 }}
