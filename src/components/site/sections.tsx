@@ -19,79 +19,85 @@ export function Hero() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-5 pt-28 pb-16 sm:px-8 lg:pt-32 lg:pb-24">
-      <div className="mx-auto w-full max-w-[110rem]">
-
-        {/* Stackweb wordmark */}
-        <motion.p
-          className="display text-[clamp(1rem,3.5vw,3rem)] tracking-[0.06em] text-foreground/50 mb-4"
-          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
+    <>
+      {/* Full-viewport STACKWEB wordmark */}
+      <section className="relative flex min-h-screen items-center overflow-hidden">
+        <motion.h1
+          className="display leading-[0.85] whitespace-nowrap px-2"
+          style={{ fontSize: "clamp(4.5rem, 19.5vw, 100vw)" }}
+          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
         >
           Stackweb
-        </motion.p>
-
-        {/* Value-prop headline */}
-        <motion.h1
-          className="display text-[clamp(3rem,10.5vw,9.5rem)] leading-[0.88]"
-          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          Custom websites,
-          <br />
-          <span className="text-foreground/40">built to convert.</span>
         </motion.h1>
+      </section>
 
-        {/* Subheadline + CTAs */}
-        <Rise delay={0.4} className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <p className="max-w-lg font-serif text-xl leading-snug text-foreground/70 sm:text-2xl">
-            One studio. One project at a time. No templates, no juniors, no handover PDFs.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 lg:shrink-0">
-            <Link
-              to="/project-form"
-              className="btn-wipe bg-primary px-7 py-3.5 text-[12px] font-medium tracking-[0.18em] text-primary-foreground uppercase"
-            >
-              Start a Project
-            </Link>
-            <a
-              href="#work"
-              className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-foreground/70 hover:text-foreground"
-            >
-              See our work
-              <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
-          </div>
-        </Rise>
+      {/* Value-prop + subhead + CTAs + thumbnail strip */}
+      <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-5 pb-16 sm:px-8 lg:pb-24">
+        <div className="mx-auto w-full max-w-[110rem]">
 
-        {/* Project thumbnail strip — visual proof */}
-        <motion.div
-          className="mt-14 grid grid-cols-3 gap-3 lg:mt-20 lg:gap-5"
-          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {projects.slice(0, 3).map((p) => (
-            <Link key={p.slug} to="/designs" hash={p.slug} className="group block">
-              <BrowserFrame url={`${p.slug}.com`}>
-                <div className="overflow-hidden">
-                  <img
-                    src={p.image}
-                    alt={p.alt}
-                    width={720}
-                    height={480}
-                    className="block w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-                  />
-                </div>
-              </BrowserFrame>
-            </Link>
-          ))}
-        </motion.div>
+          {/* Value-prop headline */}
+          <motion.p
+            className="display text-[clamp(3rem,10.5vw,9.5rem)] leading-[0.88]"
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Custom websites,
+            <br />
+            <span className="text-foreground/40">built to convert.</span>
+          </motion.p>
 
-      </div>
-    </section>
+          {/* Subheadline + CTAs */}
+          <Rise delay={0.4} className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <p className="max-w-lg font-serif text-xl leading-snug text-foreground/70 sm:text-2xl">
+              One studio. One project at a time. No templates, no juniors, no handover PDFs.
+            </p>
+            <div className="flex flex-wrap items-center gap-4 lg:shrink-0">
+              <Link
+                to="/project-form"
+                className="btn-wipe bg-primary px-7 py-3.5 text-[12px] font-medium tracking-[0.18em] text-primary-foreground uppercase"
+              >
+                Start a Project
+              </Link>
+              <a
+                href="#work"
+                className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-foreground/70 hover:text-foreground"
+              >
+                See our work
+                <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            </div>
+          </Rise>
+
+          {/* Project thumbnail strip */}
+          <motion.div
+            className="mt-14 grid grid-cols-3 gap-3 lg:mt-20 lg:gap-5"
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {projects.slice(0, 3).map((p) => (
+              <Link key={p.slug} to="/designs" hash={p.slug} className="group block">
+                <BrowserFrame url={`${p.slug}.com`}>
+                  <div className="overflow-hidden">
+                    <img
+                      src={p.image}
+                      alt={p.alt}
+                      width={720}
+                      height={480}
+                      className="block w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                    />
+                  </div>
+                </BrowserFrame>
+              </Link>
+            ))}
+          </motion.div>
+
+        </div>
+      </section>
+    </>
   );
 }
 
