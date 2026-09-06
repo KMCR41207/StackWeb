@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as DesignsRouteImport } from './routes/designs'
 import { Route as HelpRouteImport } from './routes/help'
+import { Route as ProjectFormRouteImport } from './routes/project-form'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const HelpRoute = HelpRouteImport.update({
   path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectFormRoute = ProjectFormRouteImport.update({
+  id: '/project-form',
+  path: '/project-form',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
+  '/project-form': typeof ProjectFormRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
+  '/project-form': typeof ProjectFormRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,21 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
+  '/project-form': typeof ProjectFormRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/admin' | '/designs' | '/help'
+  fullPaths: '/' | '/about' | '/admin' | '/designs' | '/help' | '/project-form'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/admin' | '/designs' | '/help'
-  id: '__root__' | '/' | '/about' | '/admin' | '/designs' | '/help'
+  to: '/' | '/about' | '/admin' | '/designs' | '/help' | '/project-form'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/designs'
+    | '/help'
+    | '/project-form'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +93,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   DesignsRoute: typeof DesignsRoute
   HelpRoute: typeof HelpRoute
+  ProjectFormRoute: typeof ProjectFormRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/project-form': {
+      id: '/project-form'
+      path: '/project-form'
+      fullPath: '/project-form'
+      preLoaderRoute: typeof ProjectFormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   DesignsRoute: DesignsRoute,
   HelpRoute: HelpRoute,
+  ProjectFormRoute: ProjectFormRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
