@@ -36,13 +36,7 @@ export function MaskedLines({
 }
 
 /** Same masked reveal, but triggered when the block scrolls into view. */
-export function MaskedLinesOnScroll({
-  lines,
-  className,
-}: {
-  lines: string[];
-  className?: string;
-}) {
+export function MaskedLinesOnScroll({ lines, className }: { lines: string[]; className?: string }) {
   const reduced = useReducedMotion();
 
   return (

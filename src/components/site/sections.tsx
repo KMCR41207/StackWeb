@@ -1,5 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { motion, useInView, useScroll, useSpring, useTransform, useReducedMotion } from "motion/react";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { BrowserFrame } from "./browser-frame";
@@ -129,7 +136,10 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
 
 export function Work() {
   return (
-    <section id="work" className="scroll-mt-24 border-t border-hairline px-5 py-24 sm:px-8 lg:py-32">
+    <section
+      id="work"
+      className="scroll-mt-24 border-t border-hairline px-5 py-24 sm:px-8 lg:py-32"
+    >
       <div className="mx-auto max-w-[110rem]">
         <div className="flex flex-wrap items-end justify-between gap-6 border-b border-hairline pb-8">
           <h2 className="display text-[clamp(2.5rem,7vw,6rem)]">
@@ -186,7 +196,10 @@ export function Process() {
         </h2>
 
         <div ref={ref} className="relative mt-16 pl-10 sm:pl-20">
-          <div className="absolute top-0 bottom-0 left-0 w-px bg-hairline sm:left-8" aria-hidden="true">
+          <div
+            className="absolute top-0 bottom-0 left-0 w-px bg-hairline sm:left-8"
+            aria-hidden="true"
+          >
             <motion.div
               className="h-full w-px origin-top bg-primary"
               style={{ scaleY: progress }}
@@ -195,12 +208,7 @@ export function Process() {
 
           <ol className="space-y-20 lg:space-y-28">
             {steps.map((s, i) => (
-              <li
-                key={s.n}
-                className={
-                  i % 2 === 1 ? "lg:ml-[26%] lg:max-w-xl" : "lg:max-w-2xl"
-                }
-              >
+              <li key={s.n} className={i % 2 === 1 ? "lg:ml-[26%] lg:max-w-xl" : "lg:max-w-2xl"}>
                 <Rise>
                   <p className="font-serif text-4xl text-primary sm:text-5xl">{s.n}</p>
                   <h3
@@ -266,9 +274,7 @@ export function WhyStackweb() {
     <section className="border-t border-hairline px-5 py-24 sm:px-8 lg:py-32">
       <div className="mx-auto max-w-[110rem]">
         <h2 className="display max-w-5xl text-[clamp(2.4rem,6.5vw,5.5rem)]">
-          <MaskedLinesOnScroll
-            lines={["A small studio", "that ships like", "a big one"]}
-          />
+          <MaskedLinesOnScroll lines={["A small studio", "that ships like", "a big one"]} />
         </h2>
 
         <dl className="mt-16 grid gap-10 border-y border-hairline py-12 sm:grid-cols-3">
@@ -311,7 +317,8 @@ export function WhyStackweb() {
 
 const quotes = [
   {
-    quote: "They designed like it was their own brand on the line. The site sells better than we do.",
+    quote:
+      "They designed like it was their own brand on the line. The site sells better than we do.",
     name: "Ananya Rao",
     company: "Livaani",
   },

@@ -77,7 +77,11 @@ export function SiteNav() {
               </li>
             ))}
             <li>
-              <Link to="/project-form" onClick={() => setOpen(false)} className="block text-primary">
+              <Link
+                to="/project-form"
+                onClick={() => setOpen(false)}
+                className="block text-primary"
+              >
                 Start a Project
               </Link>
             </li>

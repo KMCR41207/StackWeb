@@ -50,14 +50,14 @@ function AboutPage() {
           </Rise>
           <Rise delay={0.1}>
             <p className="font-serif text-2xl leading-snug sm:text-4xl">
-              Stackweb started because most agency sites look the same and most templates look worse.
-              We build custom websites on demand — brand-led, fast, and finished to a standard you can
-              point at.
+              Stackweb started because most agency sites look the same and most templates look
+              worse. We build custom websites on demand — brand-led, fast, and finished to a
+              standard you can point at.
             </p>
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-muted-foreground">
               We work directly with founders and marketing leads, no account layer in between. The
-              person who pitches the design is the person who builds it, which is why projects land in
-              weeks rather than quarters.
+              person who pitches the design is the person who builds it, which is why projects land
+              in weeks rather than quarters.
             </p>
           </Rise>
         </div>
