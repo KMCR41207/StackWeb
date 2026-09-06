@@ -10,68 +10,86 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { BrowserFrame } from "./browser-frame";
-import { MaskedLines, MaskedLinesOnScroll, Rise } from "./motion-primitives";
+import { MaskedLinesOnScroll, Rise } from "./motion-primitives";
 import { projects } from "@/lib/site";
-import heroMockup from "@/assets/hero-mockup.jpg";
 
 /* ---------------------------------------------------------------- Hero -- */
 
 export function Hero() {
-  const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", reduced ? "0%" : "16%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, reduced ? 1 : 1.06]);
 
   return (
-    <section ref={ref} className="relative px-5 pt-32 pb-16 sm:px-8 lg:pt-44">
-      <div className="mx-auto max-w-[110rem]">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] lg:items-end">
-          <h1 className="display text-[clamp(3.2rem,12.5vw,11rem)]">
-            <MaskedLines lines={["Websites", "worth", "showing off"]} />
-          </h1>
+    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-5 pt-28 pb-16 sm:px-8 lg:pt-32 lg:pb-24">
+      <div className="mx-auto w-full max-w-[110rem]">
 
-          <Rise delay={0.5} className="lg:pb-6">
-            <p className="font-serif text-2xl leading-snug text-foreground/90 sm:text-3xl">
-              Stackweb designs and builds custom websites on demand — one project at a time, no
-              templates.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-6">
-              <Link
-                to="/project-form"
-                className="btn-wipe bg-primary px-7 py-3.5 text-[12px] font-medium tracking-[0.18em] text-primary-foreground uppercase"
-              >
-                Start a Project
-              </Link>
-              <a
-                href="#work"
-                className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-foreground/80 hover:text-foreground"
-              >
-                See our work
-                <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
-            </div>
-          </Rise>
-        </div>
-
-        <motion.div
-          className="mt-16 lg:mt-24"
-          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 40 }}
+        {/* Stackweb wordmark */}
+        <motion.p
+          className="display text-[clamp(1rem,3.5vw,3rem)] tracking-[0.06em] text-foreground/50 mb-4"
+          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          style={{ y }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <BrowserFrame url="stackweb.net">
-            <motion.img
-              src={heroMockup}
-              alt="A Stackweb-built homepage with oversized typography on a near-black background"
-              width={1440}
-              height={960}
-              style={{ scale }}
-              className="block w-full origin-top object-cover"
-            />
-          </BrowserFrame>
+          Stackweb
+        </motion.p>
+
+        {/* Value-prop headline */}
+        <motion.h1
+          className="display text-[clamp(3rem,10.5vw,9.5rem)] leading-[0.88]"
+          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          Custom websites,
+          <br />
+          <span className="text-foreground/40">built to convert.</span>
+        </motion.h1>
+
+        {/* Subheadline + CTAs */}
+        <Rise delay={0.4} className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <p className="max-w-lg font-serif text-xl leading-snug text-foreground/70 sm:text-2xl">
+            One studio. One project at a time. No templates, no juniors, no handover PDFs.
+          </p>
+          <div className="flex flex-wrap items-center gap-4 lg:shrink-0">
+            <Link
+              to="/project-form"
+              className="btn-wipe bg-primary px-7 py-3.5 text-[12px] font-medium tracking-[0.18em] text-primary-foreground uppercase"
+            >
+              Start a Project
+            </Link>
+            <a
+              href="#work"
+              className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-foreground/70 hover:text-foreground"
+            >
+              See our work
+              <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+            </a>
+          </div>
+        </Rise>
+
+        {/* Project thumbnail strip — visual proof */}
+        <motion.div
+          className="mt-14 grid grid-cols-3 gap-3 lg:mt-20 lg:gap-5"
+          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {projects.slice(0, 3).map((p) => (
+            <Link key={p.slug} to="/designs" hash={p.slug} className="group block">
+              <BrowserFrame url={`${p.slug}.com`}>
+                <div className="overflow-hidden">
+                  <img
+                    src={p.image}
+                    alt={p.alt}
+                    width={720}
+                    height={480}
+                    className="block w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                  />
+                </div>
+              </BrowserFrame>
+            </Link>
+          ))}
         </motion.div>
+
       </div>
     </section>
   );
