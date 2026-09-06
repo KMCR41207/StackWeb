@@ -10,6 +10,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { BrowserFrame } from "./browser-frame";
+import { GatewayFlow } from "./gateway-flow";
 import { MaskedLinesOnScroll, Rise } from "./motion-primitives";
 import { projects } from "@/lib/site";
 
@@ -21,9 +22,13 @@ export function Hero() {
   return (
     <>
       {/* Full-viewport STACKWEB wordmark */}
-      <section className="relative flex min-h-screen items-center overflow-hidden">
+      <section className="relative flex h-screen w-full items-center justify-start overflow-hidden">
+        {/* Gateway-flow canvas background */}
+        <GatewayFlow />
+
+        {/* STACKWEB — sized to fill viewport width */}
         <motion.h1
-          className="display leading-[0.85] whitespace-nowrap px-2"
+          className="display relative z-10 leading-none whitespace-nowrap select-none"
           style={{ fontSize: "clamp(4.5rem, 19.5vw, 100vw)" }}
           initial={reduced ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -35,7 +40,8 @@ export function Hero() {
 
       {/* Value-prop + subhead + CTAs + thumbnail strip */}
       <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-5 pb-16 sm:px-8 lg:pb-24">
-        <div className="mx-auto w-full max-w-[110rem]">
+        <GatewayFlow />
+        <div className="relative z-10 mx-auto w-full max-w-[110rem]">
 
           {/* Value-prop headline */}
           <motion.p
