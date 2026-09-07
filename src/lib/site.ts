@@ -13,6 +13,7 @@ export type Project = {
   year: string;
   image: string;
   alt: string;
+  tags?: string[];
 };
 
 export const projects: Project[] = [
@@ -24,6 +25,7 @@ export const projects: Project[] = [
     year: "2025",
     image: livaani,
     alt: "Livaani home fragrance storefront with a dark editorial hero and product row",
+    tags: ["E-commerce", "Brand", "Shopify"],
   },
   {
     slug: "farcarfix",
@@ -33,6 +35,7 @@ export const projects: Project[] = [
     year: "2025",
     image: farcarfix,
     alt: "Farcarfix car repair booking site with a bold headline and booking form",
+    tags: ["Booking", "Service", "React"],
   },
   {
     slug: "prime-flex",
@@ -42,6 +45,7 @@ export const projects: Project[] = [
     year: "2024",
     image: primeflex,
     alt: "Prime Flex gym membership site with oversized type and a training photograph",
+    tags: ["Membership", "Fitness", "Marketing"],
   },
   {
     slug: "svlt",
@@ -51,6 +55,7 @@ export const projects: Project[] = [
     year: "2024",
     image: svlt,
     alt: "SVLT streetwear store with an oversized logotype and product grid",
+    tags: ["Fashion", "Shopify", "E-commerce"],
   },
   {
     slug: "asr-infra",
@@ -60,6 +65,7 @@ export const projects: Project[] = [
     year: "2024",
     image: asrinfra,
     alt: "ASR Infra construction company site with a bridge photograph and statistics",
+    tags: ["Corporate", "B2B", "Rebrand"],
   },
   {
     slug: "peoplix",
@@ -69,6 +75,7 @@ export const projects: Project[] = [
     year: "2023",
     image: peoplix,
     alt: "Peoplix HR dashboard with sidebar navigation, charts and an employee table",
+    tags: ["SaaS", "Dashboard", "Product UI"],
   },
 ];
 
