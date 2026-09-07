@@ -31,6 +31,7 @@ export function SiteNav() {
         <Link
           to="/"
           className="display min-w-0 truncate text-xl tracking-[0.06em] sm:text-2xl"
+          aria-label="Stackweb — home"
           onClick={() => setOpen(false)}
         >
           Stackweb
