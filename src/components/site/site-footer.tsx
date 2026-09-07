@@ -23,6 +23,11 @@ export function SiteFooter() {
               </li>
             ))}
             <li>
+              <Link to="/help" className="link-draw text-foreground/80 hover:text-foreground">
+                Help
+              </Link>
+            </li>
+            <li>
               <Link
                 to="/project-form"
                 className="link-draw text-foreground/80 hover:text-foreground"
