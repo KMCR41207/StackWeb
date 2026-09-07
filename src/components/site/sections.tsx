@@ -156,6 +156,15 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
           <p className="mt-4 max-w-sm font-serif text-xl leading-snug text-foreground/85">
             {project.result}
           </p>
+          {project.tags && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <span key={tag} className="border border-hairline px-2 py-0.5 text-[10px] tracking-[0.14em] uppercase text-muted-foreground">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
           <Link
             to="/designs"
             hash={project.slug}
