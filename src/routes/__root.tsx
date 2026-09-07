@@ -94,6 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Stackweb is a web design studio building custom, high-performance websites for brands that care how they look.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://stackweb.net/og-image.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
