@@ -30,6 +30,10 @@ const principles = [
     t: "Built, not assembled",
     b: "Hand-written front-end, real performance budgets, accessible contrast and keyboard paths from the first commit.",
   },
+  {
+    t: "Honest from day one",
+    b: "If something will not work, we say so before the contract. No scope creep, no surprise invoices, no handover PDFs.",
+  },
 ];
 
 function AboutPage() {
