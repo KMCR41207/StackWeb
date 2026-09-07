@@ -1,7 +1,8 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
-import { ChevronDown, ChevronUp, Mail, RefreshCw } from "lucide-react";
+import { createFileRoute, Link, useRouter, redirect } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, Mail, RefreshCw, LogOut } from "lucide-react";
 import { getEnquiries, updateEnquiryStatus } from "@/lib/enquiries.server";
+import { validateAdminToken } from "@/lib/auth.server";
 
 const title = "Admin — Stackweb";
 const description = "Internal Stackweb admin area for project enquiries.";
@@ -191,10 +192,41 @@ function EnquiryRow({ e, onStatusChange }: { e: Enquiry; onStatusChange: (id: st
 function AdminPage() {
   const { enquiries: initial, error } = Route.useLoaderData();
   const [enquiries, setEnquiries] = useState<Enquiry[]>(initial);
+  const [authChecked, setAuthChecked] = useState(false);
   const router = useRouter();
+
+  // Client-side auth check — redirect to login if no valid token
+  useEffect(() => {
+    const token = sessionStorage.getItem("sw_admin_token");
+    if (!token) {
+      router.navigate({ to: "/admin-login" });
+      return;
+    }
+    validateAdminToken({ data: { token } }).then((res) => {
+      if (!res.authenticated) {
+        sessionStorage.removeItem("sw_admin_token");
+        router.navigate({ to: "/admin-login" });
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  }, [router]);
 
   function handleStatusChange(id: string, status: string) {
     setEnquiries((prev) => prev.map((e) => e.id === id ? { ...e, status } : e));
+  }
+
+  function handleSignOut() {
+    sessionStorage.removeItem("sw_admin_token");
+    router.navigate({ to: "/admin-login" });
+  }
+
+  if (!authChecked) {
+    return (
+      <section className="flex min-h-screen items-center justify-center">
+        <p className="eyebrow text-muted-foreground">Verifying access…</p>
+      </section>
+    );
   }
 
   const counts = {
@@ -216,14 +248,24 @@ function AdminPage() {
               Project enquiries — internal use only.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => router.invalidate()}
-            className="inline-flex items-center gap-2 border border-hairline px-4 py-2 text-[11px] tracking-[0.14em] uppercase text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
-          >
-            <RefreshCw className="h-3.5 w-3.5" />
-            Refresh
-          </button>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => router.invalidate()}
+              className="inline-flex items-center gap-2 border border-hairline px-4 py-2 text-[11px] tracking-[0.14em] uppercase text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              Refresh
+            </button>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-2 border border-hairline px-4 py-2 text-[11px] tracking-[0.14em] uppercase text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              Sign out
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
