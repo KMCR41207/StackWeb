@@ -70,6 +70,15 @@ function DesignsPage() {
                     {p.type} — {p.year}
                   </p>
                   <p className="mt-3 max-w-md text-sm text-muted-foreground">{p.result}</p>
+                  {p.tags && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {p.tags.map((tag) => (
+                        <span key={tag} className="border border-hairline px-2.5 py-1 text-[11px] tracking-[0.14em] uppercase text-muted-foreground">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <ArrowUpRight
                   className="h-6 w-6 shrink-0 text-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
