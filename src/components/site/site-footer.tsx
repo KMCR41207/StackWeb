@@ -7,9 +7,12 @@ export function SiteFooter() {
     <footer className="border-t border-hairline">
       <div className="mx-auto grid max-w-[110rem] gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div>
-          <p className="display text-5xl sm:text-7xl">Stackweb</p>
-          <p className="mt-4 max-w-sm text-sm text-muted-foreground">
+          <p className="display text-5xl sm:text-7xl" aria-label="Stackweb">Stackweb</p>
+        <p className="mt-4 max-w-sm text-sm text-muted-foreground">
             Custom websites built on demand for brands that care how they look.
+          </p>
+          <p className="mt-3 text-xs text-muted-foreground/60 tracking-[0.12em] uppercase">
+            Based in the UK · Working globally
           </p>
         </div>
 
