@@ -68,6 +68,23 @@ function AboutPage() {
       </section>
 
       <section className="border-t border-hairline px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-[110rem]">
+          <dl className="grid gap-10 sm:grid-cols-3">
+            {[
+              { v: "140+", l: "Projects delivered" },
+              { v: "21 days", l: "Average turnaround" },
+              { v: "100%", l: "Custom — no templates" },
+            ].map((s) => (
+              <div key={s.l} className="border-t border-hairline pt-8">
+                <dt className="display text-[clamp(2.5rem,6vw,5rem)] text-primary">{s.v}</dt>
+                <dd className="eyebrow mt-3">{s.l}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="border-t border-hairline px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-[110rem] space-y-16">
           {principles.map((p, i) => (
             <Rise key={p.t}>
