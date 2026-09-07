@@ -35,6 +35,9 @@ function DesignsPage() {
             <p className="mt-6 max-w-xl font-serif text-2xl leading-snug text-foreground/85">
               Every site below was drawn from scratch — no themes, no starter kits, no two alike.
             </p>
+            <p className="mt-4 max-w-lg text-sm text-muted-foreground">
+              Six of the last builds. Real clients, real briefs, real results.
+            </p>
           </Rise>
         </div>
       </section>
