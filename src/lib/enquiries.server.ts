@@ -18,12 +18,8 @@ export const submitProjectEnquiry = createServerFn({ method: "POST" })
   .validator((input) => enquirySchema.parse(input))
   .handler(async ({ data }) => {
     await connectDB();
-
-    // Idempotent insert — return existing if same key already submitted
     const existing = await Enquiry.findOne({ idempotencyKey: data.idempotencyKey }).lean();
-    if (existing) {
-      return { id: String(existing._id) };
-    }
+    if (existing) return { id: String(existing._id) };
 
     const enquiry = await Enquiry.create({
       name:           data.name,
@@ -43,20 +39,31 @@ export const submitProjectEnquiry = createServerFn({ method: "POST" })
 export const getEnquiries = createServerFn({ method: "GET" }).handler(async () => {
   await connectDB();
 
-  const enquiries = await Enquiry.find()
-    .sort({ createdAt: -1 })
-    .lean();
+  const enquiries = await Enquiry.find().sort({ createdAt: -1 }).lean();
 
   return enquiries.map((e) => ({
-    id:          String(e._id),
-    name:        e.name,
-    company:     e.company,
-    email:       e.email,
+    id:           String(e._id),
+    name:         e.name,
+    company:      e.company,
+    email:        e.email,
     project_type: e.projectType,
-    budget:      e.budget,
-    timeline:    e.timeline,
-    details:     e.details,
-    created_at:  e.createdAt.toISOString(),
-    status:      e.status,
+    budget:       e.budget,
+    timeline:     e.timeline,
+    details:      e.details,
+    created_at:   e.createdAt.toISOString(),
+    status:       e.status,
   }));
 });
+
+export const updateEnquiryStatus = createServerFn({ method: "POST" })
+  .validator((input) =>
+    z.object({
+      id:     z.string().min(1),
+      status: z.enum(["New", "In progress", "Closed"]),
+    }).parse(input)
+  )
+  .handler(async ({ data }) => {
+    await connectDB();
+    await Enquiry.findByIdAndUpdate(data.id, { status: data.status });
+    return { ok: true };
+  });
