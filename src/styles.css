@@ -207,3 +207,10 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Hide Lovable editor badge on production */
+#lovable-badge,
+[data-lovable-badge],
+iframe[src*="lovable"] {
+  display: none !important;
+}
