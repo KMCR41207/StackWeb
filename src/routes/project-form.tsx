@@ -25,14 +25,17 @@ const fieldClass =
 
 const CUSTOM = "Request a custom quote";
 
+type BudgetOption = { value: string; hint: string };
+type TimelineOption = { value: string; hint: string };
+
 type ProjectTypeOption = {
   label: string;
   short: string;
   description: string;
   features: string[];
   examples: string[];
-  budgets: string[];
-  timelines: string[];
+  budgets: BudgetOption[];
+  timelines: TimelineOption[];
 };
 
 const projectTypeOptions: ProjectTypeOption[] = [
@@ -42,8 +45,18 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Content-focused websites served as plain HTML. Fast, secure, and easy to maintain.",
     features: ["Custom design", "SEO optimisation", "CMS integration", "Blog / articles", "Contact forms", "Analytics"],
     examples: ["Agency website", "Informational site", "Brochure site", "Event page"],
-    budgets: ["Under $2k", "$2k – $5k", "$5k – $10k", CUSTOM],
-    timelines: ["1–2 weeks", "2–4 weeks", "1–2 months", CUSTOM],
+    budgets: [
+      { value: "Under $2k",   hint: "Clean single-pager" },
+      { value: "$2k – $5k",   hint: "Multi-page with CMS" },
+      { value: "$5k – $10k",  hint: "Polished & full-featured" },
+      { value: CUSTOM,        hint: "Something specific in mind?" },
+    ],
+    timelines: [
+      { value: "1–2 weeks",  hint: "Quick turnaround" },
+      { value: "2–4 weeks",  hint: "Comfortable pace" },
+      { value: "1–2 months", hint: "Full creative process" },
+      { value: CUSTOM,       hint: "Have a date in mind?" },
+    ],
   },
   {
     label: "Dynamic Website",
@@ -51,8 +64,18 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Websites that generate content on-demand from a database or API.",
     features: ["Database-backed content", "User authentication", "API integrations", "Real-time updates", "Dynamic routing"],
     examples: ["News platform", "Job board", "Directory site", "Membership site"],
-    budgets: ["$5k – $10k", "$10k – $20k", "$20k+", CUSTOM],
-    timelines: ["4–6 weeks", "2–3 months", "3–5 months", CUSTOM],
+    budgets: [
+      { value: "$5k – $10k",  hint: "Core dynamic features" },
+      { value: "$10k – $20k", hint: "Rich interactions & APIs" },
+      { value: "$20k+",       hint: "Complex & scalable" },
+      { value: CUSTOM,        hint: "Let's scope it together" },
+    ],
+    timelines: [
+      { value: "4–6 weeks",   hint: "Focused build" },
+      { value: "2–3 months",  hint: "Thoughtful & tested" },
+      { value: "3–5 months",  hint: "Full-scale delivery" },
+      { value: CUSTOM,        hint: "Have a deadline?" },
+    ],
   },
   {
     label: "Business Website",
@@ -60,8 +83,18 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Professional websites for companies, agencies, startups, and service providers.",
     features: ["Brand identity", "Services pages", "Team / about", "Case studies", "Lead capture", "Multi-page structure"],
     examples: ["Startup website", "Law firm", "Consultancy", "Creative agency"],
-    budgets: ["$3k – $6k", "$6k – $12k", "$12k+", CUSTOM],
-    timelines: ["2–4 weeks", "1–2 months", "2–3 months", CUSTOM],
+    budgets: [
+      { value: "$3k – $6k",   hint: "Sharp & professional" },
+      { value: "$6k – $12k",  hint: "Premium brand presence" },
+      { value: "$12k+",       hint: "Flagship-level quality" },
+      { value: CUSTOM,        hint: "Bespoke scope" },
+    ],
+    timelines: [
+      { value: "2–4 weeks",   hint: "Fast to market" },
+      { value: "1–2 months",  hint: "Craft-focused" },
+      { value: "2–3 months",  hint: "Full brand build" },
+      { value: CUSTOM,        hint: "Work around your launch" },
+    ],
   },
   {
     label: "E-commerce",
@@ -69,8 +102,19 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Online stores for selling physical or digital products — from catalogue to checkout.",
     features: ["Product catalogue", "Search & filtering", "Shopping cart", "Checkout", "Payment integration", "Order management", "Customer accounts"],
     examples: ["Fashion store", "D2C brand", "Electronics store", "Digital downloads"],
-    budgets: ["$5k – $10k", "$10k – $20k", "$20k – $40k", "$40k+", CUSTOM],
-    timelines: ["4–8 weeks", "2–4 months", "4–6 months", CUSTOM],
+    budgets: [
+      { value: "$5k – $10k",   hint: "Essential storefront" },
+      { value: "$10k – $20k",  hint: "Full shopping experience" },
+      { value: "$20k – $40k",  hint: "Feature-rich & scalable" },
+      { value: "$40k+",        hint: "Enterprise-grade" },
+      { value: CUSTOM,         hint: "Complex catalogue?" },
+    ],
+    timelines: [
+      { value: "4–8 weeks",   hint: "Lean launch" },
+      { value: "2–4 months",  hint: "Refined & ready" },
+      { value: "4–6 months",  hint: "Full-scale store" },
+      { value: CUSTOM,        hint: "Seasonal deadline?" },
+    ],
   },
   {
     label: "Web Application",
@@ -78,8 +122,18 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Advanced interactive platforms where users log in, create, and manage data.",
     features: ["User authentication", "Role-based access", "Dashboard UI", "CRUD operations", "API integrations", "Admin panel"],
     examples: ["SaaS product", "Internal tool", "Client portal", "Analytics platform"],
-    budgets: ["$10k – $25k", "$25k – $50k", "$50k+", CUSTOM],
-    timelines: ["2–3 months", "3–6 months", "6–12 months", CUSTOM],
+    budgets: [
+      { value: "$10k – $25k", hint: "MVP & core flows" },
+      { value: "$25k – $50k", hint: "Production-ready" },
+      { value: "$50k+",       hint: "Full platform build" },
+      { value: CUSTOM,        hint: "Let's architect it" },
+    ],
+    timelines: [
+      { value: "2–3 months",   hint: "Focused sprint" },
+      { value: "3–6 months",   hint: "Iterative build" },
+      { value: "6–12 months",  hint: "Long-form delivery" },
+      { value: CUSTOM,         hint: "Phased rollout?" },
+    ],
   },
   {
     label: "Portfolio / Personal",
@@ -87,8 +141,18 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Showcases for freelancers, designers, photographers, writers, and professionals.",
     features: ["Work showcase", "About / bio", "Contact form", "Blog (optional)", "PDF downloads", "Social links"],
     examples: ["Designer portfolio", "Photographer site", "Freelancer profile", "Resume site"],
-    budgets: ["Under $2k", "$2k – $4k", "$4k – $8k", CUSTOM],
-    timelines: ["1 week", "1–2 weeks", "2–4 weeks", CUSTOM],
+    budgets: [
+      { value: "Under $2k",  hint: "Minimal & elegant" },
+      { value: "$2k – $4k",  hint: "Considered & personal" },
+      { value: "$4k – $8k",  hint: "Standout creative presence" },
+      { value: CUSTOM,       hint: "Something extra?" },
+    ],
+    timelines: [
+      { value: "1 week",     hint: "Quick launch" },
+      { value: "1–2 weeks",  hint: "Polished & prompt" },
+      { value: "2–4 weeks",  hint: "Full creative treatment" },
+      { value: CUSTOM,       hint: "Around your schedule" },
+    ],
   },
   {
     label: "Landing Page",
@@ -96,8 +160,18 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Single-page sites designed to convert — for launches, ads, waitlists, and campaigns.",
     features: ["Hero section", "Feature highlights", "Social proof", "CTA buttons", "Lead capture", "A/B ready"],
     examples: ["Product launch", "App waitlist", "Ad campaign", "Event signup"],
-    budgets: ["Under $1.5k", "$1.5k – $3k", "$3k – $6k", CUSTOM],
-    timelines: ["3–5 days", "1–2 weeks", "2–3 weeks", CUSTOM],
+    budgets: [
+      { value: "Under $1.5k", hint: "Clean conversion page" },
+      { value: "$1.5k – $3k", hint: "Crafted & compelling" },
+      { value: "$3k – $6k",   hint: "Art-directed & animated" },
+      { value: CUSTOM,        hint: "Campaign-level scope" },
+    ],
+    timelines: [
+      { value: "3–5 days",   hint: "Rapid deploy" },
+      { value: "1–2 weeks",  hint: "Properly considered" },
+      { value: "2–3 weeks",  hint: "Full creative pass" },
+      { value: CUSTOM,       hint: "Campaign date locked?" },
+    ],
   },
   {
     label: "Custom / Other",
@@ -105,8 +179,19 @@ const projectTypeOptions: ProjectTypeOption[] = [
     description: "Doesn't fit the above? Tell us what you're building and we'll figure it out.",
     features: ["Scoped on enquiry", "Architecture review", "Tech recommendation", "Custom roadmap"],
     examples: ["Hybrid platform", "Niche tool", "Multi-tenant app", "Experimental build"],
-    budgets: ["Not sure yet", "Under $5k", "$5k – $20k", "$20k+", CUSTOM],
-    timelines: ["ASAP", "Flexible", "Need a quote first", CUSTOM],
+    budgets: [
+      { value: "Not sure yet", hint: "We'll help scope it" },
+      { value: "Under $5k",    hint: "Compact & clever" },
+      { value: "$5k – $20k",   hint: "Solid custom build" },
+      { value: "$20k+",        hint: "No ceiling" },
+      { value: CUSTOM,         hint: "Something in mind?" },
+    ],
+    timelines: [
+      { value: "ASAP",              hint: "As soon as possible" },
+      { value: "Flexible",          hint: "No rush" },
+      { value: "Need a quote first",hint: "Scope first, then date" },
+      { value: CUSTOM,              hint: "Tell us your window" },
+    ],
   },
 ];
 
@@ -249,46 +334,89 @@ function DynamicSelect({
   id: string;
   name: string;
   label: string;
-  options: string[];
+  options: { value: string; hint: string }[];
   value: string;
   onChange: (v: string) => void;
 }) {
-  const isCustom = value === CUSTOM || (!options.includes(value) && value !== "");
-  const [customText, setCustomText] = useState(isCustom ? value : "");
+  const [open, setOpen] = useState(false);
+  const [customText, setCustomText] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isCustom = value === CUSTOM || (!options.some((o) => o.value === value) && value !== "");
+  const selected = options.find((o) => o.value === value) ?? options[0]!;
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
 
   return (
-    <div>
+    <div ref={containerRef} className="relative">
       <label htmlFor={id} className="eyebrow block">{label}</label>
-      <select
+      <input type="hidden" name={name} value={isCustom ? customText : value} />
+
+      {/* Trigger */}
+      <button
+        type="button"
         id={id}
-        name={isCustom ? undefined : name}
-        value={isCustom ? CUSTOM : value}
-        onChange={(e) => {
-          if (e.target.value === CUSTOM) {
-            onChange(CUSTOM);
-          } else {
-            onChange(e.target.value);
-            setCustomText("");
-          }
-        }}
-        className={`${fieldClass} appearance-none`}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`${fieldClass} flex items-center justify-between text-left`}
       >
-        {options.map((o) => (
-          <option key={o} value={o} className="bg-background">{o}</option>
-        ))}
-      </select>
+        <span className="truncate">
+          {isCustom ? (customText || "Request a custom quote") : selected.value}
+          {!isCustom && selected.hint && (
+            <span className="ml-2 text-sm text-muted-foreground/60">— {selected.hint}</span>
+          )}
+        </span>
+        <span className="ml-2 shrink-0 text-xs text-muted-foreground/40">▾</span>
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <ul
+          role="listbox"
+          aria-label={label}
+          className="absolute left-0 right-0 top-full z-40 border border-hairline bg-background shadow-[0_8px_40px_rgba(0,0,0,0.7)]"
+        >
+          {options.map((opt) => {
+            const isSel = opt.value === value || (opt.value === CUSTOM && isCustom);
+            return (
+              <li
+                key={opt.value}
+                role="option"
+                aria-selected={isSel}
+                className={`cursor-pointer px-4 py-3 font-serif text-base transition-colors ${
+                  isSel ? "bg-primary/10 text-foreground" : "text-foreground/80 hover:bg-surface hover:text-foreground"
+                }`}
+                onClick={() => { onChange(opt.value); setOpen(false); if (opt.value !== CUSTOM) setCustomText(""); }}
+              >
+                <span className="font-medium">{opt.value}</span>
+                {opt.value !== CUSTOM && opt.hint && (
+                  <span className="ml-2 text-sm text-muted-foreground">— {opt.hint}</span>
+                )}
+                {opt.value === CUSTOM && (
+                  <span className="ml-2 text-sm text-primary/80">— {opt.hint}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {/* Custom free-text */}
       {isCustom && (
-        <>
-          <input type="hidden" name={name} value={customText} />
-          <input
-            type="text"
-            placeholder={`Describe your ${label.toLowerCase()}…`}
-            value={customText}
-            onChange={(e) => { setCustomText(e.target.value); onChange(e.target.value); }}
-            className={`${fieldClass} mt-2 text-base`}
-            aria-label={`Custom ${label.toLowerCase()}`}
-          />
-        </>
+        <input
+          type="text"
+          placeholder={`Describe your ${label.toLowerCase()}…`}
+          value={customText}
+          onChange={(e) => setCustomText(e.target.value)}
+          className={`${fieldClass} mt-2 text-base`}
+          aria-label={`Custom ${label.toLowerCase()}`}
+        />
       )}
     </div>
   );
@@ -300,15 +428,15 @@ function ProjectFormPage() {
   const [projectType, setProjectType] = useState(projectTypeOptions[0]?.label ?? "Static Website");
   const currentType = projectTypeOptions.find((o) => o.label === projectType) ?? projectTypeOptions[0]!;
 
-  const [budget, setBudget] = useState(currentType.budgets[0] ?? "");
-  const [timeline, setTimeline] = useState(currentType.timelines[0] ?? "");
+  const [budget, setBudget] = useState(currentType.budgets[0]?.value ?? "");
+  const [timeline, setTimeline] = useState(currentType.timelines[0]?.value ?? "");
 
   // Reset budget/timeline when project type changes
   const prevType = useRef(projectType);
   useEffect(() => {
     if (prevType.current !== projectType) {
-      setBudget(currentType.budgets[0] ?? "");
-      setTimeline(currentType.timelines[0] ?? "");
+      setBudget(currentType.budgets[0]?.value ?? "");
+      setTimeline(currentType.timelines[0]?.value ?? "");
       prevType.current = projectType;
     }
   }, [projectType, currentType]);
