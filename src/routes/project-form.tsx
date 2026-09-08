@@ -21,7 +21,7 @@ export const Route = createFileRoute("/project-form")({
 });
 
 const fieldClass =
-  "w-full border-b border-input bg-transparent py-3 text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-primary";
+  "w-full border-b border-input bg-transparent py-3 text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-primary font-serif";
 
 const projectTypes = [
   "Marketing site",
