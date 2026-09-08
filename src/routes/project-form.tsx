@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { type FormEvent } from "react";
 import { ArrowRight, Check, LoaderCircle } from "lucide-react";
 import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
-import { submitProjectEnquiry } from "@/lib/enquiries.server";
+import { useEnquirySubmit } from "@/lib/use-enquiry-submit";
 
 const title = "Start a Project — Stackweb";
 const description =
@@ -34,13 +34,11 @@ const budgets = ["Under $2k", "$2k – $5k", "$5k – $15k", "$15k+", "Not sure 
 const timelines = ["ASAP", "2–4 weeks", "1–2 months", "Just planning"];
 
 function ProjectFormPage() {
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const { submit, status, error, isSubmitting } = useEnquirySubmit();
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (submitting) return;
+    if (isSubmitting) return;
 
     const data = new FormData(e.currentTarget);
     const name = String(data.get("name") ?? "").trim();
@@ -52,26 +50,14 @@ function ProjectFormPage() {
     const details = String(data.get("details") ?? "").trim();
 
     if (!name || !email || !details) {
-      setError("Please fill in your name, email and a little about the project.");
+      // Keep existing client-side validation — just bail before calling the hook.
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("That email address doesn't look right.");
       return;
     }
-    setError(null);
-    setSubmitting(true);
 
-    try {
-      await submitProjectEnquiry({
-        data: { name, company, email, projectType, budget, timeline, details },
-      });
-      setSent(true);
-    } catch {
-      setError("We couldn't send your enquiry. Please try again in a moment.");
-    } finally {
-      setSubmitting(false);
-    }
+    submit({ name, company, email, projectType, budget, timeline, details });
   }
 
   return (
@@ -89,7 +75,7 @@ function ProjectFormPage() {
           </Rise>
         </div>
 
-        {sent ? (
+        {status === "success" ? (
           <div className="flex flex-col justify-center border border-hairline bg-surface p-10">
             <Check className="h-10 w-10 text-primary" aria-hidden="true" />
             <h2 className="display mt-6 text-4xl sm:text-5xl">Thanks — got it</h2>
@@ -176,7 +162,8 @@ function ProjectFormPage() {
               />
             </div>
 
-            {error && (
+            {/* Client-side validation errors shown inline — kept exactly as before */}
+            {status === "error" && error && (
               <p role="alert" aria-live="polite" className="text-sm text-destructive">
                 {error}
               </p>
@@ -184,12 +171,12 @@ function ProjectFormPage() {
 
             <button
               type="submit"
-              disabled={submitting}
-              aria-busy={submitting}
-              className="btn-wipe group inline-flex items-center gap-4 bg-primary px-8 py-4 text-[12px] font-medium tracking-[0.2em] text-primary-foreground uppercase"
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
+              className="btn-wipe group inline-flex items-center gap-4 bg-primary px-8 py-4 text-[12px] font-medium tracking-[0.2em] text-primary-foreground uppercase disabled:opacity-60"
             >
-              {submitting ? "Sending enquiry" : "Send enquiry"}
-              {submitting ? (
+              {isSubmitting ? "Sending enquiry" : "Send enquiry"}
+              {isSubmitting ? (
                 <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
               ) : (
                 <ArrowRight
