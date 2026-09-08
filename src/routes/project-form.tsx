@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, LoaderCircle } from "lucide-react";
 import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
+import { submitProjectEnquiry } from "@/lib/enquiries.server";
 
 const title = "Start a Project — Stackweb";
 const description =
@@ -35,12 +36,19 @@ const timelines = ["ASAP", "2–4 weeks", "1–2 months", "Just planning"];
 function ProjectFormPage() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting) return;
+
     const data = new FormData(e.currentTarget);
     const name = String(data.get("name") ?? "").trim();
+    const company = String(data.get("company") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
+    const projectType = String(data.get("type") ?? "").trim();
+    const budget = String(data.get("budget") ?? "").trim();
+    const timeline = String(data.get("timeline") ?? "").trim();
     const details = String(data.get("details") ?? "").trim();
 
     if (!name || !email || !details) {
@@ -52,7 +60,18 @@ function ProjectFormPage() {
       return;
     }
     setError(null);
-    setSent(true);
+    setSubmitting(true);
+
+    try {
+      await submitProjectEnquiry({
+        data: { name, company, email, projectType, budget, timeline, details },
+      });
+      setSent(true);
+    } catch {
+      setError("We couldn't send your enquiry. Please try again in a moment.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -158,20 +177,26 @@ function ProjectFormPage() {
             </div>
 
             {error && (
-              <p role="alert" className="text-sm text-destructive">
+              <p role="alert" aria-live="polite" className="text-sm text-destructive">
                 {error}
               </p>
             )}
 
             <button
               type="submit"
+              disabled={submitting}
+              aria-busy={submitting}
               className="btn-wipe group inline-flex items-center gap-4 bg-primary px-8 py-4 text-[12px] font-medium tracking-[0.2em] text-primary-foreground uppercase"
             >
-              Send enquiry
-              <ArrowRight
-                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5"
-                aria-hidden="true"
-              />
+              {submitting ? "Sending enquiry" : "Send enquiry"}
+              {submitting ? (
+                <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5"
+                  aria-hidden="true"
+                />
+              )}
             </button>
           </form>
         )}

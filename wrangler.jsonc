@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "stackweb",
+  "main": ".output/server/index.mjs",
+  "compatibility_date": "2026-09-06",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "stackweb",
+      "database_id": "local",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
