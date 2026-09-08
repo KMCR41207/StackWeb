@@ -68,7 +68,7 @@ function HelpPage() {
 
       <section className="border-t border-hairline px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-4xl">
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="multiple" defaultValue={faqs.map((_, i) => `item-${i}`)} className="w-full">
             {faqs.map((f, i) => (
               <AccordionItem key={f.q} value={`item-${i}`} className="border-hairline">
                 <AccordionTrigger className="py-6 text-left text-xl hover:no-underline sm:text-2xl">
