@@ -132,6 +132,41 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    const remove = () => {
+      // Walk all direct children of body — badge is always appended there
+      document.querySelectorAll("body > *").forEach((el) => {
+        // Check the element itself or any anchor inside it
+        const anchors = [el, ...el.querySelectorAll("a")];
+        for (const a of anchors) {
+          if (a instanceof HTMLAnchorElement && a.href.includes("lovable")) {
+            el.remove();
+            return;
+          }
+        }
+        // Also remove any fixed/absolute element with no semantic role that looks like a badge
+        const style = window.getComputedStyle(el);
+        if (
+          (style.position === "fixed" || style.position === "absolute") &&
+          el.tagName !== "SCRIPT" &&
+          el.id !== "main" &&
+          !el.closest("header, main, footer, nav")
+        ) {
+          const text = el.textContent?.toLowerCase() ?? "";
+          if (text.includes("lovable") || text.includes("edit with")) {
+            el.remove();
+          }
+        }
+      });
+    };
+
+    // Run immediately and on DOM mutations (badge may inject after load)
+    remove();
+    const observer = new MutationObserver(remove);
+    observer.observe(document.body, { childList: true, subtree: false });
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SiteNav />
