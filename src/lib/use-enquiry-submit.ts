@@ -31,9 +31,13 @@ export function useEnquirySubmit() {
         setStatus("success");
       } catch (err) {
         setStatus("error");
-        setError(
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
-        );
+        const msg = err instanceof Error ? err.message : "";
+        // Hide technical DB errors from the user
+        if (msg.includes("ECONNREFUSED") || msg.includes("querySrv") || msg.includes("database")) {
+          setError("We couldn't send your enquiry right now. Please try again in a moment or email us directly.");
+        } else {
+          setError(msg || "Something went wrong. Please try again.");
+        }
       }
     },
     [status],

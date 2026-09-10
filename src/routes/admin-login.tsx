@@ -51,7 +51,7 @@ function AdminLoginPage() {
     "w-full border-b border-input bg-transparent py-3 text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary font-serif";
 
   return (
-    <section className="flex min-h-screen items-center justify-center px-5 sm:px-8">
+    <section className="flex min-h-screen items-center justify-center px-5 py-20 sm:px-8">
       <div className="w-full max-w-sm">
         <p className="display text-3xl">Stackweb</p>
         <p className="eyebrow mt-2 text-muted-foreground">Admin access</p>
