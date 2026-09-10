@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as DesignsRouteImport } from './routes/designs'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ProjectFormRouteImport } from './routes/project-form'
@@ -29,6 +30,11 @@ const AboutRoute = AboutRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin-login',
+  path: '/admin-login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignsRoute = DesignsRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
+  '/admin-login': typeof AdminLoginRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
   '/project-form': typeof ProjectFormRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
+  '/admin-login': typeof AdminLoginRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
   '/project-form': typeof ProjectFormRoute
@@ -68,20 +76,36 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
+  '/admin-login': typeof AdminLoginRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
   '/project-form': typeof ProjectFormRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/admin' | '/designs' | '/help' | '/project-form'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/admin-login'
+    | '/designs'
+    | '/help'
+    | '/project-form'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/admin' | '/designs' | '/help' | '/project-form'
+  to:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/admin-login'
+    | '/designs'
+    | '/help'
+    | '/project-form'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/admin'
+    | '/admin-login'
     | '/designs'
     | '/help'
     | '/project-form'
@@ -91,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   DesignsRoute: typeof DesignsRoute
   HelpRoute: typeof HelpRoute
   ProjectFormRoute: typeof ProjectFormRoute
@@ -117,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-login': {
+      id: '/admin-login'
+      path: '/admin-login'
+      fullPath: '/admin-login'
+      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/designs': {
@@ -147,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
+  AdminLoginRoute: AdminLoginRoute,
   DesignsRoute: DesignsRoute,
   HelpRoute: HelpRoute,
   ProjectFormRoute: ProjectFormRoute,
