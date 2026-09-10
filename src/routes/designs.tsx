@@ -50,18 +50,36 @@ function DesignsPage() {
               id={p.slug}
               className={`group scroll-mt-28 ${i % 3 === 0 ? "lg:col-span-2" : ""}`}
             >
-              <BrowserFrame url={`${p.slug}.com`}>
-                <div className="overflow-hidden">
-                  <img
-                    src={p.image}
-                    alt={p.alt}
-                    width={1440}
-                    height={960}
-                    loading="lazy"
-                    className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
-                  />
-                </div>
-              </BrowserFrame>
+              {/* Browser frame — clickable if live URL exists */}
+              {p.url ? (
+                <a href={p.url} target="_blank" rel="noreferrer noopener" aria-label={`Visit ${p.client} website`}>
+                  <BrowserFrame url={new URL(p.url).hostname}>
+                    <div className="overflow-hidden">
+                      <img
+                        src={p.image}
+                        alt={p.alt}
+                        width={1440}
+                        height={960}
+                        loading="lazy"
+                        className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+                      />
+                    </div>
+                  </BrowserFrame>
+                </a>
+              ) : (
+                <BrowserFrame url={`${p.slug}.com`}>
+                  <div className="overflow-hidden">
+                    <img
+                      src={p.image}
+                      alt={p.alt}
+                      width={1440}
+                      height={960}
+                      loading="lazy"
+                      className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+                    />
+                  </div>
+                </BrowserFrame>
+              )}
 
               <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
                 <div className="min-w-0">
@@ -78,6 +96,17 @@ function DesignsPage() {
                         </span>
                       ))}
                     </div>
+                  )}
+                  {p.url && (
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="link-draw mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-primary"
+                    >
+                      Visit site
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
                   )}
                 </div>
                 <ArrowUpRight

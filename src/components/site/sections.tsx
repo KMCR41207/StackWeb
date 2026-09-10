@@ -130,7 +130,7 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
       }`}
     >
       <motion.figure style={{ scale }} className="group origin-center">
-        <BrowserFrame url={`${project.slug}.com`}>
+        <BrowserFrame url={project.url ? new URL(project.url).hostname : `${project.slug}.com`}>
           <div className="overflow-hidden">
             <img
               src={project.image}
@@ -165,14 +165,27 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
               ))}
             </div>
           )}
-          <Link
-            to="/designs"
-            hash={project.slug}
-            className="link-draw mt-6 inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-primary"
-          >
-            View project
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
+          <div className="mt-6 flex flex-wrap items-center gap-5">
+            <Link
+              to="/designs"
+              hash={project.slug}
+              className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-primary"
+            >
+              View project
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+            {project.url && (
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-foreground/60 hover:text-foreground"
+              >
+                Visit site
+                <ArrowRight className="h-3.5 w-3.5 rotate-[-45deg]" aria-hidden="true" />
+              </a>
+            )}
+          </div>
         </Rise>
       </div>
     </div>

@@ -14,6 +14,7 @@ export type Project = {
   image: string;
   alt: string;
   tags?: string[];
+  url?: string;
 };
 
 export const projects: Project[] = [
@@ -76,6 +77,7 @@ export const projects: Project[] = [
     image: peoplix,
     alt: "Peoplix HR dashboard with sidebar navigation, charts and an employee table",
     tags: ["SaaS", "Dashboard", "Product UI"],
+    url: "https://peoplix.ai",
   },
 ];
 
