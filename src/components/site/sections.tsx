@@ -19,7 +19,6 @@ import { projects } from "@/lib/site";
 
 export function Hero() {
   const reduced = useReducedMotion();
-
   return (
     <>
       {/* Full-viewport STACKWEB wordmark with gateway-flow behind */}
