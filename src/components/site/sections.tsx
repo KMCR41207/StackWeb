@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { BrowserFrame } from "./browser-frame";
 import { GatewayFlow } from "./gateway-flow";
+import { ParticleText } from "./particle-text";
 import { MaskedLinesOnScroll, Rise } from "./motion-primitives";
 import { projects } from "@/lib/site";
 
@@ -27,22 +28,25 @@ export function Hero() {
       >
         <GatewayFlow />
 
-        <motion.h1
-          className="relative z-10 block w-full whitespace-nowrap select-none"
-          style={{
-            fontFamily: "'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif",
-            fontWeight: 900,
-            fontSize: "clamp(4rem, 55vh, 55vh)",
-            letterSpacing: "-0.02em",
-            textTransform: "uppercase",
-            lineHeight: 1,
-          }}
-          initial={reduced ? { opacity: 1 } : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          Stackweb
-        </motion.h1>
+        <ParticleText
+          text="Stackweb"
+          color="#f4f1ea"
+          highlightColor="#f4f1ea"
+          fontSize="clamp(4.5rem, 19.5vw, 19.5vw)"
+          fontWeight={900}
+          fontFamily="'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif"
+          particleSize={2.2}
+          density={4}
+          scatter={190}
+          gatherDuration={1600}
+          stagger={420}
+          pointerRepel={42}
+          repelRadius={120}
+          idleDrift={0.8}
+          glow={false}
+          className="relative z-10"
+          style={{ minHeight: "55vh" }}
+        />
       </section>
 
       {/* Value-prop + subhead + CTAs + thumbnail strip — no canvas here */}
