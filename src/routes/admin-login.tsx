@@ -56,7 +56,7 @@ function AdminLoginPage() {
         <p className="display text-3xl">Stackweb</p>
         <p className="eyebrow mt-2 text-muted-foreground">Admin access</p>
 
-        <form onSubmit={onSubmit} noValidate className="mt-10 space-y-8">
+        <form onSubmit={onSubmit} noValidate autoComplete="off" className="mt-10 space-y-8">
           <div>
             <label htmlFor="username" className="eyebrow block">Username</label>
             <input
