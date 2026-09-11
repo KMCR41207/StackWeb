@@ -102,6 +102,7 @@ export function Hero() {
                       alt={p.alt}
                       width={720}
                       height={480}
+                      loading="eager"
                       className="block w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
                     />
                   </div>
