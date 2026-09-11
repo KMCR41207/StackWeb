@@ -135,6 +135,7 @@ export function GatewayFlow() {
   return (
     <canvas
       ref={canvasRef}
+      role="presentation"
       aria-hidden="true"
       className="absolute inset-0 h-full w-full"
     />
