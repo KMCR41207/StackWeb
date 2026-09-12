@@ -19,6 +19,16 @@ import { projects } from "@/lib/site";
 
 export function Hero() {
   const reduced = useReducedMotion();
+  const [showReal, setShowReal] = useState(false);
+
+  // After particles settle, crossfade to real text
+  // gather ~1600ms + stagger ~420ms + settle buffer = ~2.8s
+  useEffect(() => {
+    if (reduced) { setShowReal(true); return; }
+    const id = setTimeout(() => setShowReal(true), 2800);
+    return () => clearTimeout(id);
+  }, [reduced]);
+
   return (
     <>
       {/* Full-viewport STACKWEB wordmark with gateway-flow behind */}
@@ -27,6 +37,25 @@ export function Hero() {
       >
         <GatewayFlow />
 
+        {/* Real solid text — sits behind canvas, fades in after particles settle */}
+        <h1
+          className="absolute inset-x-0 z-10 block w-full whitespace-nowrap select-none transition-opacity duration-700"
+          style={{
+            fontFamily: "'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif",
+            fontWeight: 900,
+            fontSize: "clamp(4.5rem, 19.5vw, 19.5vw)",
+            letterSpacing: "-0.02em",
+            textTransform: "uppercase",
+            lineHeight: 1,
+            color: "#f4f1ea",
+            opacity: showReal ? 1 : 0,
+          }}
+          aria-hidden="true"
+        >
+          Stackweb
+        </h1>
+
+        {/* Particle canvas — fades out once real text is visible */}
         <ParticleText
           text="Stackweb"
           color="#f4f1ea"
@@ -43,8 +72,12 @@ export function Hero() {
           repelRadius={120}
           idleDrift={0.8}
           glow={false}
-          className="relative z-10"
-          style={{ minHeight: "55vh" }}
+          className="relative z-20 transition-opacity duration-700"
+          style={{
+            minHeight: "55vh",
+            opacity: showReal ? 0 : 1,
+            pointerEvents: showReal ? "none" : "auto",
+          }}
         />
       </section>
 
