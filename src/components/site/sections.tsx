@@ -442,9 +442,12 @@ export function FinalCta() {
           <MaskedLinesOnScroll lines={["Let's build", "something worth", "showing off"]} />
         </h2>
         <Rise delay={0.15}>
+          <p className="mt-6 max-w-lg font-serif text-xl leading-snug text-primary-foreground/80">
+            One fixed price. One team. Delivered in weeks, not quarters.
+          </p>
           <Link
             to="/project-form"
-            className="group mt-12 inline-flex items-center gap-4 border border-primary-foreground/40 px-8 py-4 text-[12px] tracking-[0.2em] uppercase transition-colors duration-300 hover:bg-primary-foreground hover:text-primary"
+            className="group mt-10 inline-flex items-center gap-4 border border-primary-foreground/40 px-8 py-4 text-[12px] tracking-[0.2em] uppercase transition-colors duration-300 hover:bg-primary-foreground hover:text-primary"
           >
             Start a Project
             <ArrowRight
