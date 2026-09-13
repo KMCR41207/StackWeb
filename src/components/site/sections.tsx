@@ -63,9 +63,9 @@ export function Hero() {
           fontSize="clamp(4.5rem, 19.5vw, 19.5vw)"
           fontWeight={900}
           fontFamily="'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif"
-          particleSize={2.2}
-          density={4}
-          scatter={190}
+          particleSize={2.4}
+          density={3}
+          scatter={200}
           gatherDuration={1600}
           stagger={420}
           pointerRepel={42}
