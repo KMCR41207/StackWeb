@@ -32,14 +32,14 @@ export function Hero() {
   return (
     <>
       {/* Full-viewport STACKWEB wordmark with gateway-flow behind */}
-      <section className="relative flex h-screen w-full items-center overflow-x-hidden"
+      <section className="relative flex h-screen w-full items-center justify-center overflow-x-hidden"
         style={{ overflowY: "visible" }}
       >
         <GatewayFlow />
 
         {/* Real solid text — sits behind canvas, fades in after particles settle */}
         <h1
-          className="absolute inset-x-0 z-10 block w-full whitespace-nowrap select-none transition-opacity duration-700"
+          className="absolute inset-x-0 z-10 block w-full whitespace-nowrap select-none transition-opacity duration-1000 text-center"
           style={{
             fontFamily: "'Barlow Condensed', 'Anton', 'Arial Narrow', sans-serif",
             fontWeight: 900,
@@ -72,7 +72,7 @@ export function Hero() {
           repelRadius={120}
           idleDrift={0.8}
           glow={false}
-          className="relative z-20 transition-opacity duration-700"
+          className="absolute inset-0 z-20 transition-opacity duration-1000"
           style={{
             minHeight: "55vh",
             opacity: showReal ? 0 : 1,
