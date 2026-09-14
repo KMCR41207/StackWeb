@@ -375,7 +375,7 @@ export function WhyStackweb() {
 
         <dl className="mt-16 grid gap-10 border-y border-hairline py-12 sm:grid-cols-3">
           {[
-            { v: 140, s: "+", l: "Projects delivered" },
+            { v: 150, s: "+", l: "Projects delivered" },
             { v: 21, s: " days", l: "Average turnaround" },
             { v: 98, s: "%", l: "Clients who come back" },
           ].map((stat) => (
