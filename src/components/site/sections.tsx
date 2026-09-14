@@ -362,6 +362,7 @@ const comparison = [
   ["Themes reskinned to fit", "Every layout drawn for your brand"],
   ["Handed to a junior after signing", "The designer who pitched it builds it"],
   ["Invoices for every small change", "First month of tweaks included"],
+  ["Six-month timelines as standard", "Most sites ship in three to five weeks"],
 ];
 
 export function WhyStackweb() {
