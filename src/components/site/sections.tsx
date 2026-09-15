@@ -433,6 +433,16 @@ const quotes = [
     name: "Lena Osei",
     company: "Peoplix",
   },
+  {
+    quote: "We'd tried two agencies before. Stackweb delivered in four weeks what they couldn't in six months.",
+    name: "Rohan Mehta",
+    company: "Prime Flex",
+  },
+  {
+    quote: "The attention to typography alone was worth it. Every other studio just uses the defaults.",
+    name: "Clara Voss",
+    company: "SVLT",
+  },
 ];
 
 export function Testimonials() {
