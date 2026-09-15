@@ -456,7 +456,7 @@ export function Testimonials() {
       <motion.div
         className="mt-12 flex w-max gap-6"
         animate={reduced ? { x: 0 } : { x: ["0%", "-50%"] }}
-        transition={{ duration: 46, ease: "linear", repeat: Infinity }}
+        transition={{ duration: 60, ease: "linear", repeat: Infinity }}
       >
         {row.map((q, i) => (
           <figure
