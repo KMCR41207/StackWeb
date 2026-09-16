@@ -49,6 +49,14 @@ export function SiteFooter() {
             <Instagram className="h-4 w-4" aria-hidden="true" />
             Instagram
           </a>
+          <a
+            href="https://twitter.com/stackweb"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="inline-flex items-center gap-2 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary"
+          >
+            Twitter / X
+          </a>
         </div>
       </div>
 
