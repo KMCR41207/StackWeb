@@ -66,6 +66,10 @@ function AboutPage() {
               person who pitches the design is the person who builds it, which is why projects land
               in weeks rather than quarters.
             </p>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+              Every project is scoped as a fixed price before we start. No hourly billing, no scope
+              creep surprises. You own everything we make — code, assets, the lot.
+            </p>
           </Rise>
         </div>
       </section>
