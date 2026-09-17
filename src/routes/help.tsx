@@ -9,7 +9,7 @@ import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
 
 const title = "Help — Stackweb";
 const description =
-  "Answers on timelines, pricing, revisions, hosting and support for websites built by Stackweb.";
+  "Answers on timelines, pricing, revisions, copy, hosting and support for websites built by Stackweb. Every project is fixed price.";
 
 export const Route = createFileRoute("/help")({
   head: () => ({
