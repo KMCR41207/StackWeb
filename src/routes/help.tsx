@@ -55,6 +55,10 @@ const faqs = [
     q: "What technologies do you build with?",
     a: "React, TanStack Start, Next.js, Shopify, and plain HTML/CSS depending on what the project calls for. We pick the right tool, not the fashionable one.",
   },
+  {
+    q: "Can I see the code before I pay?",
+    a: "Yes. We stage every build on a live URL as we go, and you see commits in real time. Nothing is hidden behind a reveal-on-payment wall.",
+  },
 ];
 
 function HelpPage() {
