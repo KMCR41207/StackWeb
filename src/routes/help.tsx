@@ -51,6 +51,10 @@ const faqs = [
     q: "Do you work with existing sites?",
     a: "Often. We take over half-finished builds and redesign tired ones — send the URL and we will tell you honestly what is worth keeping.",
   },
+  {
+    q: "What technologies do you build with?",
+    a: "React, TanStack Start, Next.js, Shopify, and plain HTML/CSS depending on what the project calls for. We pick the right tool, not the fashionable one.",
+  },
 ];
 
 function HelpPage() {
