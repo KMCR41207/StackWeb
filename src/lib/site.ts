@@ -57,6 +57,7 @@ export const projects: Project[] = [
     image: svlt,
     alt: "SVLT streetwear store with an oversized logotype and product grid",
     tags: ["Fashion", "Shopify", "E-commerce"],
+    url: "https://svlt.co",
   },
   {
     slug: "asr-infra",
@@ -67,6 +68,7 @@ export const projects: Project[] = [
     image: asrinfra,
     alt: "ASR Infra construction company site with a bridge photograph and statistics",
     tags: ["Corporate", "B2B", "Rebrand"],
+    url: "https://asrinfra.in",
   },
   {
     slug: "peoplix",
