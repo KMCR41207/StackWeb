@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUp, Instagram } from "lucide-react";
 import { navLinks } from "@/lib/site";
 
+import { SITE_TWITTER, SITE_INSTAGRAM } from "@/lib/constants";
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-hairline">
@@ -41,7 +43,7 @@ export function SiteFooter() {
           </ul>
 
           <a
-            href="https://instagram.com"
+            href={SITE_INSTAGRAM}
             target="_blank"
             rel="noreferrer noopener"
             className="inline-flex items-center gap-2 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary"
@@ -50,7 +52,7 @@ export function SiteFooter() {
             Instagram
           </a>
           <a
-            href="https://twitter.com/stackweb"
+            href={SITE_TWITTER}
             target="_blank"
             rel="noreferrer noopener"
             className="inline-flex items-center gap-2 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary"
