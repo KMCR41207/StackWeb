@@ -47,6 +47,11 @@ function AboutPage() {
           <h1 className="display max-w-5xl text-[clamp(2.8rem,9vw,8rem)]">
             <MaskedLinesOnScroll lines={["A studio for", "brands that", "sweat details"]} />
           </h1>
+          <Rise delay={0.2}>
+            <p className="mt-6 max-w-lg font-serif text-xl leading-snug text-foreground/70 sm:text-2xl">
+              Based in the UK. Building for brands worldwide since 2022.
+            </p>
+          </Rise>
         </div>
       </section>
 
