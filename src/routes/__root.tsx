@@ -84,14 +84,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Stackweb is a web design studio building custom, high-performance websites for brands that care how they look.",
+          "Stackweb is a UK-based web design studio building custom, high-performance websites. Fixed price, fast delivery.",
       },
       { name: "author", content: "Stackweb" },
       { property: "og:title", content: "Stackweb — Custom websites, built on demand" },
       {
         property: "og:description",
         content:
-          "Stackweb is a web design studio building custom, high-performance websites for brands that care how they look.",
+          "Stackweb is a UK-based web design studio building custom, high-performance websites. Fixed price, fast delivery.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://stackweb.net" },
