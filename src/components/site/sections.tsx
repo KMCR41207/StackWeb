@@ -233,7 +233,7 @@ export function Work() {
   return (
     <section
       id="work"
-      className="scroll-mt-24 border-t border-hairline px-5 py-24 sm:px-8 lg:py-32"
+      className="scroll-mt-20 border-t border-hairline px-5 py-24 sm:px-8 lg:py-32"
     >
       <div className="mx-auto max-w-[110rem]">
         <div className="flex flex-wrap items-end justify-between gap-6 border-b border-hairline pb-8">
