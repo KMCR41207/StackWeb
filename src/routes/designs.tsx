@@ -4,7 +4,7 @@ import { BrowserFrame } from "@/components/site/browser-frame";
 import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
 import { projects } from "@/lib/site";
 
-const title = "Work — Stackweb design studio";
+const title = "Work — Stackweb | Custom Website Portfolio";
 const description =
   "Selected websites and product interfaces built by Stackweb: Livaani, Farcarfix, Prime Flex, SVLT, ASR Infra and Peoplix.";
 
