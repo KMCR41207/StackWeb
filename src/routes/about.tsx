@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
 
-const title = "About — Stackweb";
+const title = "About — Stackweb | UK Web Design Studio";
 const description =
   "Stackweb is a small web design studio building custom sites on demand: art direction, front-end craft and a launch you can measure.";
 
