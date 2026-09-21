@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
 
-const title = "Help — Stackweb";
+const title = "Help — Stackweb | FAQ & Support";
 const description =
   "Answers on timelines, pricing, revisions, copy, hosting and support for websites built by Stackweb. Every project is fixed price.";
 
