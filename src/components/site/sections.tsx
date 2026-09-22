@@ -152,20 +152,14 @@ export function Hero() {
 
 /* ---------------------------------------------------------------- Work -- */
 
-function WorkItem({ project, index }: { project: (typeof projects)[number]; index: number }) {
+function WorkItem({ project }: { project: (typeof projects)[number] }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
-  const scale = useTransform(scrollYProgress, [0, 1], [reduced ? 1 : 0.9, 1]);
-  const flip = index % 2 === 1;
+  const scale = useTransform(scrollYProgress, [0, 1], [reduced ? 1 : 0.96, 1]);
 
   return (
-    <div
-      ref={ref}
-      className={`grid items-center gap-8 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-14 ${
-        flip ? "lg:[&>figure]:order-2" : ""
-      }`}
-    >
+    <div ref={ref}>
       <motion.figure style={{ scale }} className="group origin-center">
         <BrowserFrame url={project.url ? new URL(project.url).hostname : `${project.slug}.com`}>
           <div className="overflow-hidden">
@@ -175,22 +169,24 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
               width={1440}
               height={960}
               loading="lazy"
-              className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+              className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
             />
           </div>
         </BrowserFrame>
       </motion.figure>
 
-      <div>
-        <MaskedLinesOnScroll
-          className="display block text-5xl sm:text-6xl"
-          lines={[project.client]}
-        />
-        <Rise delay={0.1}>
-          <p className="eyebrow mt-4">
+      <div className="mt-6 grid gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+        <div className="min-w-0">
+          <MaskedLinesOnScroll
+            className="display block text-5xl sm:text-6xl lg:text-7xl"
+            lines={[project.client]}
+          />
+          <p className="eyebrow mt-3">
             {project.type} — {project.year}
           </p>
-          <p className="mt-4 max-w-sm font-serif text-xl leading-snug text-foreground/85">
+        </div>
+        <Rise delay={0.1}>
+          <p className="max-w-xl font-serif text-xl leading-snug text-foreground/85 sm:text-2xl">
             {project.result}
           </p>
           {project.tags && (
@@ -244,8 +240,8 @@ export function Work() {
         </div>
 
         <div className="mt-20 space-y-28 lg:space-y-40">
-          {projects.map((p, i) => (
-            <WorkItem key={p.slug} project={p} index={i} />
+          {projects.map((p) => (
+            <WorkItem key={p.slug} project={p} />
           ))}
         </div>
       </div>
