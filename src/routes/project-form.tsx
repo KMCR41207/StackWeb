@@ -4,9 +4,9 @@ import { ArrowRight, Check, LoaderCircle, X } from "lucide-react";
 import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
 import { useEnquirySubmit } from "@/lib/use-enquiry-submit";
 
-const title = "Start a Project — Stackweb";
+const title = "Start a Project — Stackweb | Custom Website Design";
 const description =
-  "Tell Stackweb about your website project: scope, budget and timeline. We reply within one working day.";
+  "Tell Stackweb about your website project: type, scope, budget and timeline. Fixed price quotes. We reply within one working day.";
 
 export const Route = createFileRoute("/project-form")({
   head: () => ({
