@@ -236,7 +236,7 @@ export function Work() {
           <h2 className="display text-[clamp(2.5rem,7vw,6rem)]">
             <MaskedLinesOnScroll lines={["Selected work"]} />
           </h2>
-          <p className="eyebrow">Six of the last builds</p>
+          <p className="eyebrow">Six of the last builds — all hand-coded</p>
         </div>
 
         <div className="mt-20 space-y-28 lg:space-y-40">
