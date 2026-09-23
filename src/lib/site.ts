@@ -27,6 +27,7 @@ export const projects: Project[] = [
     image: livaani,
     alt: "Livaani home fragrance storefront with a dark editorial hero and product row",
     tags: ["E-commerce", "Brand", "Shopify"],
+    url: "https://livaani.com",
   },
   {
     slug: "farcarfix",
