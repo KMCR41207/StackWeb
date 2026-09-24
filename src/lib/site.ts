@@ -38,6 +38,7 @@ export const projects: Project[] = [
     image: farcarfix,
     alt: "Farcarfix car repair booking site with a bold headline and booking form",
     tags: ["Booking", "Service", "React"],
+    url: "https://farcarfix.com",
   },
   {
     slug: "prime-flex",
@@ -48,6 +49,7 @@ export const projects: Project[] = [
     image: primeflex,
     alt: "Prime Flex gym membership site with oversized type and a training photograph",
     tags: ["Membership", "Fitness", "Marketing"],
+    url: "https://primeflex.co",
   },
   {
     slug: "svlt",
