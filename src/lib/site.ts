@@ -90,4 +90,5 @@ export const navLinks = [
   { to: "/designs", label: "Work" },
   { to: "/about", label: "About" },
   { to: "/help", label: "Help" },
+  { to: "/project-form", label: "Contact" },
 ] as const;
