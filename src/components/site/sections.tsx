@@ -489,16 +489,24 @@ export function FinalCta() {
           <p className="mt-6 max-w-lg font-serif text-xl leading-snug text-primary-foreground/80">
             One fixed price. One team. Delivered in weeks, not quarters.
           </p>
-          <Link
-            to="/project-form"
-            className="group mt-10 inline-flex items-center gap-4 border border-primary-foreground/40 px-8 py-4 text-[12px] tracking-[0.2em] uppercase transition-colors duration-300 hover:bg-primary-foreground hover:text-primary"
-          >
-            Start a Project
-            <ArrowRight
-              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5"
-              aria-hidden="true"
-            />
-          </Link>
+          <div className="mt-10 flex flex-wrap items-center gap-6">
+            <Link
+              to="/project-form"
+              className="group inline-flex items-center gap-4 border border-primary-foreground/40 px-8 py-4 text-[12px] tracking-[0.2em] uppercase transition-colors duration-300 hover:bg-primary-foreground hover:text-primary"
+            >
+              Start a Project
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5"
+                aria-hidden="true"
+              />
+            </Link>
+            <Link
+              to="/designs"
+              className="link-draw text-[12px] tracking-[0.2em] uppercase text-primary-foreground/70 hover:text-primary-foreground"
+            >
+              See the work
+            </Link>
+          </div>
         </Rise>
       </div>
     </section>
