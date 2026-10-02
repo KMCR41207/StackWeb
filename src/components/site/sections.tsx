@@ -12,6 +12,7 @@ import { ArrowDown, ArrowRight } from "lucide-react";
 import { BrowserFrame } from "./browser-frame";
 import { GatewayFlow } from "./gateway-flow";
 import { ParticleText } from "./particle-text";
+import { ParticleReveal } from "./particle-reveal";
 import { MaskedLinesOnScroll, Rise } from "./motion-primitives";
 import { projects } from "@/lib/site";
 
@@ -152,41 +153,45 @@ export function Hero() {
 
 /* ---------------------------------------------------------------- Work -- */
 
-function WorkItem({ project }: { project: (typeof projects)[number] }) {
+function WorkItem({ project, index }: { project: (typeof projects)[number]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
-  const scale = useTransform(scrollYProgress, [0, 1], [reduced ? 1 : 0.96, 1]);
+  const scale = useTransform(scrollYProgress, [0, 1], [reduced ? 1 : 0.9, 1]);
+  const flip = index % 2 === 1;
 
   return (
-    <div ref={ref}>
+    <div
+      ref={ref}
+      className={`grid items-center gap-8 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-14 ${
+        flip ? "lg:[&>figure]:order-2" : ""
+      }`}
+    >
       <motion.figure style={{ scale }} className="group origin-center">
         <BrowserFrame url={project.url ? new URL(project.url).hostname : `${project.slug}.com`}>
-          <div className="overflow-hidden">
-            <img
-              src={project.image}
-              alt={project.alt}
-              width={1440}
-              height={960}
-              loading="lazy"
-              className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
-            />
-          </div>
+          <ParticleReveal
+            src={project.image}
+            alt={project.alt}
+            count={5000}
+            particleSize={2.2}
+            globeRadiusFactor={0.36}
+            stiffness={0.06}
+            crossfadeDuration={350}
+            className="aspect-[3/2] w-full"
+          />
         </BrowserFrame>
       </motion.figure>
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
-        <div className="min-w-0">
-          <MaskedLinesOnScroll
-            className="display block text-5xl sm:text-6xl lg:text-7xl"
-            lines={[project.client]}
-          />
-          <p className="eyebrow mt-3">
+      <div>
+        <MaskedLinesOnScroll
+          className="display block text-5xl sm:text-6xl"
+          lines={[project.client]}
+        />
+        <Rise delay={0.1}>
+          <p className="eyebrow mt-4">
             {project.type} — {project.year}
           </p>
-        </div>
-        <Rise delay={0.1}>
-          <p className="max-w-xl font-serif text-xl leading-snug text-foreground/85 sm:text-2xl">
+          <p className="mt-4 max-w-sm font-serif text-xl leading-snug text-foreground/85">
             {project.result}
           </p>
           {project.tags && (
@@ -236,12 +241,12 @@ export function Work() {
           <h2 className="display text-[clamp(2.5rem,7vw,6rem)]">
             <MaskedLinesOnScroll lines={["Selected work"]} />
           </h2>
-          <p className="eyebrow">Six of the last builds — all hand-coded</p>
+          <p className="eyebrow">Six of the last builds</p>
         </div>
 
         <div className="mt-20 space-y-28 lg:space-y-40">
-          {projects.map((p) => (
-            <WorkItem key={p.slug} project={p} />
+          {projects.map((p, i) => (
+            <WorkItem key={p.slug} project={p} index={i} />
           ))}
         </div>
       </div>
