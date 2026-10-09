@@ -3,7 +3,7 @@ import farcarfix from "@/assets/work-farcarfix.jpg";
 import primeflex from "@/assets/work-primeflex.jpg";
 import svlt from "@/assets/work-svlt.jpg";
 import asrinfra from "@/assets/work-asrinfra.jpg";
-import peoplix from "@/assets/work-peoplix-new.jpg";
+import peoplix from "@/assets/work-peoplix-real.png";
 
 export type Project = {
   slug: string;
@@ -76,12 +76,12 @@ export const projects: Project[] = [
   {
     slug: "peoplix",
     client: "Peoplix",
-    type: "Workforce Management SaaS",
-    result: "A centralised workforce platform covering employee records, shift scheduling, time & attendance, leave workflows and labour analytics — built for teams that have outgrown spreadsheets.",
+    type: "AI SaaS / Enterprise HR",
+    result: "AI voice agents that resolve every employee request instantly — leave queries, payroll, Workday — zero tickets, 94% resolution rate.",
     year: "2025",
     image: peoplix,
-    alt: "Peoplix workforce management dashboard with employee table, attendance charts and scheduling overview",
-    tags: ["SaaS", "HR Tech", "Workforce Management"],
+    alt: "Peoplix homepage showing AI voice agent resolving employee requests with 94% resolution rate and zero ticket handling",
+    tags: ["AI Agents", "SaaS", "Enterprise HR"],
     url: "https://peoplix.ai",
   },
 ];
