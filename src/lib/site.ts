@@ -1,4 +1,4 @@
-import livaani from "@/assets/work-livaani.jpg";
+import livaani from "@/assets/work-livaani-hero.png";
 import farcarfix from "@/assets/work-farcarfix.jpg";
 import primeflex from "@/assets/work-primeflex.jpg";
 import svlt from "@/assets/work-svlt.jpg";
@@ -21,13 +21,13 @@ export const projects: Project[] = [
   {
     slug: "livaani",
     client: "Livaani",
-    type: "E-commerce / Brand",
-    result: "A candle-lit storefront that lifted average order value by 34%.",
-    year: "2025",
+    type: "Modern Ethnic Fashion",
+    result: "Luxury ethnic fashion storefront with bespoke tailoring, five kurti categories, loyalty rewards and WhatsApp order alerts.",
+    year: "2026",
     image: livaani,
-    alt: "Livaani home fragrance storefront with a dark editorial hero and product row",
-    tags: ["E-commerce", "Brand", "Shopify"],
-    url: "https://livaani.com",
+    alt: "Livaani modern ethnic fashion homepage with full-bleed hero banner, kurti category grid and bespoke tailoring section",
+    tags: ["Ethnic Fashion", "E-commerce", "Bespoke Tailoring"],
+    url: "https://livaani.stackweb.net",
   },
   {
     slug: "farcarfix",

@@ -1,368 +1,283 @@
+/**
+ * ParticleReveal — Three.js WebGPU particle-globe effect
+ *
+ * Behaviour:
+ *  • On mount: particles start as a globe, spring-settle into the image (0.8 s delay)
+ *  • While settling: hovering the card pulls particles back to globe; leaving re-settles
+ *  • Once initial settle completes: image is LOCKED — no re-animation until reload
+ *  • Falls back to a plain <img> if WebGPU is unavailable
+ */
 import { useEffect, useRef, useState } from "react";
 
-/* ─── Easing ─── */
-const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
-const easeInOutCubic = (t: number) =>
-  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
-
-/* ─── Types ─── */
-type Particle = {
-  /* canvas coords */
-  x: number;
-  y: number;
-  /* where it lives when scattered (globe) */
-  scatterX: number;
-  scatterY: number;
-  /* where it lives in the image */
-  imageX: number;
-  imageY: number;
-  /* colour sampled from the photo */
-  r: number;
-  g: number;
-  b: number;
-  /* animation bookkeeping */
-  startX: number;
-  startY: number;
-  seed: number;
-  delay: number;
-  size: number;
-};
-
-/* ─── Globe distribution helper ─── */
-function globePosition(
-  index: number,
-  total: number,
-  radius: number,
-  yaw: number,
-  tilt: number,
-): [number, number, number] {
-  const sphereY = 1 - (index / Math.max(total - 1, 1)) * 2;
-  const ringRadius = Math.sqrt(Math.max(0, 1 - sphereY * sphereY));
-  const angle = index * 2.39996323; // golden ratio spiral
-  const sphereX = Math.cos(angle) * ringRadius;
-  const sphereZ = Math.sin(angle) * ringRadius;
-  const spunX = sphereX * Math.cos(yaw) + sphereZ * Math.sin(yaw);
-  const spunZ = -sphereX * Math.sin(yaw) + sphereZ * Math.cos(yaw);
-  return [
-    spunX * radius,
-    (sphereY * Math.cos(tilt) - spunZ * Math.sin(tilt)) * radius,
-    (sphereY * Math.sin(tilt) + spunZ * Math.cos(tilt)) * radius,
-  ];
-}
-
-/* ─── Component ─── */
 interface ParticleRevealProps {
-  /** URL of the image to reveal */
   src: string;
   alt: string;
-  /** Total particles drawn */
-  count?: number;
-  /** Particle dot size in px */
-  particleSize?: number;
-  /** Globe radius as fraction of the shorter canvas edge */
-  globeRadiusFactor?: number;
-  /** Spring stiffness for gather */
-  stiffness?: number;
-  /** Crossfade duration ms when revealing the actual <img> */
-  crossfadeDuration?: number;
-  className?: string;
 }
 
-export function ParticleReveal({
-  src,
-  alt,
-  count = 6000,
-  particleSize = 2,
-  globeRadiusFactor = 0.38,
-  stiffness = 0.055,
-  crossfadeDuration = 400,
-  className = "",
-}: ParticleRevealProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function isWebGPUAvailable(): boolean {
+  return typeof navigator !== "undefined" && "gpu" in navigator;
+}
+
+export function ParticleReveal({ src, alt }: ParticleRevealProps) {
+  const stageRef  = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const [imgVisible, setImgVisible] = useState(false);
+  const [fallback, setFallback] = useState(!isWebGPUAvailable());
 
   useEffect(() => {
-    const container = containerRef.current;
+    if (fallback) return; // WebGPU not available — plain img is shown
+
+    const stage  = stageRef.current;
     const canvas = canvasRef.current;
-    if (!container || !canvas) return;
+    if (!stage || !canvas) return;
 
-    const ctx = canvas.getContext("2d", { willReadFrequently: false });
-    if (!ctx) return;
+    let destroyed = false;
 
-    /* ── State ── */
-    let raf: number | null = null;
-    let buildId = 0;
-    let particles: Particle[] = [];
-    let hovered = false;
-    let globeYaw = Math.random() * Math.PI * 2;
-    const TILT = -0.28;
-    let width = 0;
-    let height = 0;
-    let dpr = 1;
-    let reducedMotion =
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    async function boot() {
+      /* dynamic imports — keeps WebGPU bundle out of initial chunk */
+      const [
+        { animate, frame, motionValue, transformValue },
+        { threeEffect },
+        THREE,
+        { attribute, cos, mix, positionLocal, sin, time, uniform, vec3 },
+      ] = await Promise.all([
+        import("motion"),
+        import("motion/three"),
+        import("three/webgpu") as Promise<typeof import("three/webgpu")>,
+        import("three/tsl"),
+      ]);
+      if (destroyed) return;
 
-    /* target "globe" or "image" fractions — 0 = globe, 1 = image */
-    let morphTarget = 0; // where we want to be
-    let morphCurrent = 0; // where we are (spring-driven each frame)
+      /* ── TSL uniform: 1 = globe, 0 = image ── */
+      const globe      = uniform(1);
+      const globeValue = motionValue(1);
 
-    /* ── Load & sample image ── */
-    const loadAndSample = async (current: number) => {
-      const rect = container.getBoundingClientRect();
-      width = Math.round(rect.width);
-      height = Math.round(rect.height);
-      if (width < 1 || height < 1) return;
-
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      /* --- sample the image into an offscreen canvas --- */
-      const off = document.createElement("canvas");
-      const SAMPLE_W = 200;
-      const imgEl = imgRef.current;
-      if (!imgEl) return;
-
-      // ensure image is loaded
-      if (!imgEl.complete || imgEl.naturalWidth === 0) {
-        await new Promise<void>((res) => {
-          imgEl.onload = () => res();
-          imgEl.onerror = () => res();
-        });
+      function highResolutionMix(amount: number) {
+        const a = Math.max(amount, 0);
+        const t = Math.min(1, Math.max(0, (a - 0.005) / 0.03));
+        return 1 - t * t * (3 - 2 * t);
       }
-      if (current !== buildId) return;
 
-      const aspect = imgEl.naturalWidth / Math.max(1, imgEl.naturalHeight);
-      const SAMPLE_H = Math.round(SAMPLE_W / aspect);
-      off.width = SAMPLE_W;
-      off.height = SAMPLE_H;
-      const oc = off.getContext("2d", { willReadFrequently: true });
-      if (!oc) return;
-      oc.drawImage(imgEl, 0, 0, SAMPLE_W, SAMPLE_H);
-      const pixelData = oc.getImageData(0, 0, SAMPLE_W, SAMPLE_H).data;
+      const COLUMNS  = 200;
+      const globeYaw = Math.random() * Math.PI * 2;
 
-      /* --- build particles --- */
-      globeYaw = Math.random() * Math.PI * 2;
-      const radius = Math.min(width, height) * globeRadiusFactor;
-      const cx = width / 2;
-      const cy = height / 2;
-
-      // spread image evenly across canvas (letterboxed)
-      const imgDrawW = Math.min(width, height * aspect);
-      const imgDrawH = imgDrawW / aspect;
-      const imgLeft = cx - imgDrawW / 2;
-      const imgTop = cy - imgDrawH / 2;
-
-      const newParticles: Particle[] = [];
-      for (let i = 0; i < count; i++) {
-        const seed = ((i * 9301 + 49297) % 233280) / 233280;
-        const seed2 = ((i * 1234 + 5678) % 9999) / 9999;
-
-        /* image position — row-major mapping */
-        const col = i % SAMPLE_W;
-        const row = Math.floor(i / SAMPLE_W) % SAMPLE_H;
-        const pixelIndex = (row * SAMPLE_W + col) * 4;
-        const r = pixelData[pixelIndex] ?? 128;
-        const g = pixelData[pixelIndex + 1] ?? 128;
-        const b = pixelData[pixelIndex + 2] ?? 128;
-
-        const imageX = imgLeft + (col + 0.5) / SAMPLE_W * imgDrawW;
-        const imageY = imgTop + (row + 0.5) / SAMPLE_H * imgDrawH;
-
-        /* globe position — fibonacci sphere */
-        const [gx, gy] = globePosition(i, count, radius, globeYaw, TILT);
-        const scatterX = cx + gx;
-        const scatterY = cy - gy; // y-flip for screen space
-
-        /* start from globe when reduced motion is off */
-        const startX = reducedMotion ? imageX : scatterX;
-        const startY = reducedMotion ? imageY : scatterY;
-
-        newParticles.push({
-          x: startX, y: startY,
-          scatterX, scatterY,
-          imageX, imageY,
-          startX, startY,
-          r, g, b,
-          seed,
-          delay: seed2 * (reducedMotion ? 0 : 0.35),
-          size: particleSize * (0.6 + seed * 0.8),
+      /* ── load photo pixels + Three texture ── */
+      function loadPhoto(url: string) {
+        return new Promise<{
+          width: number; height: number;
+          pixels: Uint8ClampedArray;
+          map: THREE.Texture;
+        }>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => {
+            const off = document.createElement("canvas");
+            off.width = img.naturalWidth; off.height = img.naturalHeight;
+            const c = off.getContext("2d", { willReadFrequently: true })!;
+            c.drawImage(img, 0, 0);
+            const tex = new THREE.Texture(img);
+            tex.colorSpace = THREE.SRGBColorSpace; tex.needsUpdate = true;
+            resolve({ width: off.width, height: off.height,
+                      pixels: c.getImageData(0, 0, off.width, off.height).data, map: tex });
+          };
+          img.onerror = () => reject(new Error(`Failed to load: ${url}`));
+          img.src = url;
         });
       }
 
-      particles = newParticles;
-      morphCurrent = reducedMotion ? 0 : 0;
-      morphTarget = 0; // start as globe
-    };
+      /* ── instanced particles ── */
+      function buildParticles(photo: Awaited<ReturnType<typeof loadPhoto>>) {
+        const imageAspect = photo.width / photo.height;
+        const rows  = Math.round(COLUMNS / imageAspect);
+        const count = COLUMNS * rows;
+        const imgP  = new Float32Array(count * 3);
+        const gloP  = new Float32Array(count * 3);
+        const col   = new Float32Array(count * 3);
+        const ph    = new Float32Array(count);
+        const sp    = new Float32Array(count);
+        const colour = new THREE.Color();
 
-    /* ── Render loop ── */
-    const render = (now: number) => {
-      ctx.clearRect(0, 0, width, height);
-
-      /* spring-step morphCurrent toward morphTarget */
-      const diff = morphTarget - morphCurrent;
-      morphCurrent += diff * stiffness * (reducedMotion ? 1 : 1);
-
-      /* once fully revealed, show the real img and pause canvas */
-      const fullyRevealed = morphCurrent > 0.97;
-      const fullyGlobe = morphCurrent < 0.03;
-
-      if (fullyRevealed) {
-        morphCurrent = 1;
-        setImgVisible(true);
-      } else {
-        setImgVisible(false);
-      }
-
-      /* draw each particle */
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-
-        /* per-particle delayed morph */
-        const t = clamp((morphCurrent - p.delay * (hovered ? -1 : 1)) / 1, 0, 1);
-        const eased = hovered ? easeOutQuint(t) : easeInOutCubic(t);
-
-        const tx = p.scatterX + (p.imageX - p.scatterX) * eased;
-        const ty = p.scatterY + (p.imageY - p.scatterY) * eased;
-
-        /* gentle idle drift when in globe state */
-        let fx = tx, fy = ty;
-        if (!hovered && !reducedMotion && fullyGlobe) {
-          const drift = 0.9;
-          fx += Math.sin(now * 0.0007 + p.seed * 12) * drift;
-          fy += Math.cos(now * 0.00055 + p.seed * 8) * drift;
+        for (let i = 0; i < count; i++) {
+          const c2 = i % COLUMNS, r2 = Math.floor(i / COLUMNS);
+          const sx = Math.min(photo.width  - 1, Math.floor(((c2 + 0.5) / COLUMNS) * photo.width));
+          const sy = Math.min(photo.height - 1, Math.floor(((r2 + 0.5) / rows)    * photo.height));
+          const px = (sy * photo.width + sx) * 4, o = i * 3;
+          colour.setRGB(photo.pixels[px]/255, photo.pixels[px+1]/255, photo.pixels[px+2]/255, THREE.SRGBColorSpace);
+          col[o] = colour.r; col[o+1] = colour.g; col[o+2] = colour.b;
+          ph[i] = Math.random() * Math.PI * 2;
+          sp[i] = 0.7 + Math.random() * 0.35;
         }
 
-        /* spring follow */
-        p.x += (fx - p.x) * (reducedMotion ? 1 : 0.18);
-        p.y += (fy - p.y) * (reducedMotion ? 1 : 0.18);
+        const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1));
+        geo.instanceCount = count;
+        geo.setAttribute("imagePosition", new THREE.InstancedBufferAttribute(imgP, 3));
+        geo.setAttribute("globePosition", new THREE.InstancedBufferAttribute(gloP, 3));
+        geo.setAttribute("colour",        new THREE.InstancedBufferAttribute(col,  3));
+        geo.setAttribute("phase",         new THREE.InstancedBufferAttribute(ph,   1));
+        geo.setAttribute("speed",         new THREE.InstancedBufferAttribute(sp,   1));
 
-        /* alpha: full brightness in image position, slightly dim in globe */
-        const alpha = 0.55 + eased * 0.45;
-        ctx.globalAlpha = clamp(alpha, 0, 1);
-        ctx.fillStyle = `rgb(${p.r},${p.g},${p.b})`;
+        const pSize = uniform(new THREE.Vector2(0.01, 0.01));
+        const turb  = vec3(
+          sin(time.mul((attribute("speed") as ReturnType<typeof attribute>).add(0.60)).add(attribute("phase") as ReturnType<typeof attribute>)).mul(0.045),
+          cos(time.mul((attribute("speed") as ReturnType<typeof attribute>).add(0.37)).add((attribute("phase") as ReturnType<typeof attribute>).mul(1.71))).mul(0.035),
+          sin(time.mul((attribute("speed") as ReturnType<typeof attribute>).add(0.22)).add((attribute("phase") as ReturnType<typeof attribute>).mul(2.13))).mul(0.045),
+        );
+        const mat = new THREE.MeshBasicNodeMaterial({ toneMapped: false });
+        mat.colorNode    = attribute("colour") as ReturnType<typeof attribute>;
+        const center     = mix(attribute("imagePosition") as ReturnType<typeof attribute>, (attribute("globePosition") as ReturnType<typeof attribute>).add(turb), globe);
+        mat.positionNode = center.add(vec3(positionLocal.xy.mul(pSize), 0));
 
-        if (p.size <= 1.5) {
-          ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-        } else {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        return { imageAspect, columns: COLUMNS, rows, particleSize: pSize, object: new THREE.Mesh(geo, mat) };
       }
-      ctx.globalAlpha = 1;
 
-      raf = requestAnimationFrame(render);
-    };
+      /* ── photo overlay ── */
+      function buildOverlay(photo: Awaited<ReturnType<typeof loadPhoto>>) {
+        const mat = new THREE.MeshBasicMaterial({ map: photo.map, toneMapped: false,
+          transparent: true, depthWrite: false, depthTest: false, opacity: 0 });
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
+        mesh.renderOrder = 1; return mesh;
+      }
 
-    /* ── Events ── */
-    const onEnter = () => {
-      hovered = true;
-      morphTarget = 1;
-    };
-    const onLeave = () => {
-      hovered = false;
-      morphTarget = 0;
-      setImgVisible(false);
-    };
+      /* ── layout ── */
+      function layout(
+        parts: ReturnType<typeof buildParticles>,
+        ov: ReturnType<typeof buildOverlay>,
+        aspect: number,
+      ) {
+        const { columns, imageAspect, object, particleSize, rows } = parts;
+        const imgH = Math.min(0.72, 0.86 * aspect / imageAspect);
+        const imgW = imgH * imageAspect;
+        const rad  = Math.min(0.58, aspect * 0.82);
+        const pos  = object.geometry.getAttribute("imagePosition");
+        const sph  = object.geometry.getAttribute("globePosition");
+        const yc   = Math.cos(globeYaw), ys = Math.sin(globeYaw), tilt = -0.28;
+        for (let i = 0; i < pos.count; i++) {
+          const c2 = i % columns, r2 = Math.floor(i / columns);
+          const x = (c2 + 0.5) / columns, y = (r2 + 0.5) / rows;
+          const sY = 1 - (i / Math.max(pos.count - 1, 1)) * 2;
+          const rr = Math.sqrt(Math.max(0, 1 - sY * sY));
+          const ang = i * 2.39996323;
+          const sX = Math.cos(ang) * rr, sZ = Math.sin(ang) * rr;
+          const spX = sX * yc + sZ * ys, spZ = -sX * ys + sZ * yc;
+          pos.setXYZ(i, (x-0.5)*imgW*2, (0.5-y)*imgH*2, 0);
+          sph.setXYZ(i, spX*rad, (sY*Math.cos(tilt)-spZ*Math.sin(tilt))*rad, (sY*Math.sin(tilt)+spZ*Math.cos(tilt))*rad);
+        }
+        pos.needsUpdate = true; sph.needsUpdate = true;
+        particleSize.value.set(imgW * 2 / columns * 1.01, imgH * 2 / rows * 1.01);
+        ov.scale.set(imgW * 2, imgH * 2, 1);
+      }
 
-    container.addEventListener("mouseenter", onEnter);
-    container.addEventListener("mouseleave", onLeave);
-    container.addEventListener("focusin", onEnter);
-    container.addEventListener("focusout", onLeave);
-
-    /* ── Resize ── */
-    let resizeRaf: number | null = null;
-    const ro = new ResizeObserver(() => {
-      if (resizeRaf) cancelAnimationFrame(resizeRaf);
-      resizeRaf = requestAnimationFrame(() => {
-        const cur = ++buildId;
-        loadAndSample(cur).then(() => {
-          if (cur === buildId && raf === null) {
-            raf = requestAnimationFrame(render);
-          }
+      /* ── Motion springs ── */
+      function attachMotion(ov: ReturnType<typeof buildOverlay>) {
+        threeEffect(globe, { value: globeValue });
+        threeEffect(ov.material as THREE.MeshBasicMaterial, {
+          opacity: transformValue(() => highResolutionMix(globeValue.get())),
         });
-      });
+
+        let locked = false;
+
+        /* initial: globe → image */
+        animate(globeValue, 0, {
+          type: "spring", stiffness: 55, damping: 16, mass: 1, delay: 0.8,
+          onComplete: () => { locked = true; },
+        });
+
+        /* hover on the card wrapper */
+        const onEnter = () => { if (!locked) animate(globeValue, 1, { type: "spring", stiffness: 120, damping: 18, mass: 0.9 }); };
+        const onLeave = () => { if (!locked) animate(globeValue, 0, { type: "spring", stiffness: 70,  damping: 16, mass: 1   }); };
+        stage!.addEventListener("mouseenter", onEnter);
+        stage!.addEventListener("mouseleave", onLeave);
+        return () => {
+          stage!.removeEventListener("mouseenter", onEnter);
+          stage!.removeEventListener("mouseleave", onLeave);
+        };
+      }
+
+      /* ── renderer ── */
+      let renderer: THREE.WebGPURenderer;
+      try {
+        renderer = new THREE.WebGPURenderer({ canvas: canvas!, antialias: true });
+        await renderer.init();
+      } catch (err) {
+        console.warn("ParticleReveal: WebGPU init failed, falling back to img", err);
+        setFallback(true);
+        return;
+      }
+      if (destroyed) { renderer.dispose(); return; }
+
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      let photo: Awaited<ReturnType<typeof loadPhoto>>;
+      try {
+        photo = await loadPhoto(src);
+      } catch (err) {
+        console.warn("ParticleReveal: photo load failed", err);
+        setFallback(true); renderer.dispose(); return;
+      }
+      if (destroyed) { renderer.dispose(); return; }
+
+      const parts   = buildParticles(photo);
+      const overlay = buildOverlay(photo);
+      const scene   = new THREE.Scene();
+      scene.background = new THREE.Color(0x0d0d0d);
+      const camera  = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+      camera.position.z = 4;
+      scene.add(parts.object);
+      scene.add(overlay);
+
+      const resize = () => {
+        const w = Math.max(stage!.clientWidth, 1), h = Math.max(stage!.clientHeight, 1), a = w / h;
+        renderer.setSize(w, h, false);
+        camera.left = -a; camera.right = a; camera.top = 1; camera.bottom = -1;
+        camera.updateProjectionMatrix();
+        layout(parts, overlay, a);
+      };
+      const ro = new ResizeObserver(resize);
+      ro.observe(stage!);
+      resize();
+
+      const detach   = attachMotion(overlay);
+      canvas!.dataset.ready = "true";
+      const stopRaf  = frame.render(() => renderer.render(scene, camera), true);
+
+      (stage as HTMLElement & { __pr_cleanup?: () => void }).__pr_cleanup = () => {
+        detach(); ro.disconnect(); stopRaf(); renderer.dispose();
+      };
+    }
+
+    boot().catch((err) => {
+      console.error("ParticleReveal boot error:", err);
+      setFallback(true);
     });
-    ro.observe(container);
-
-    /* ── Reduced motion MQ ── */
-    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const onMq = (e: MediaQueryListEvent) => { reducedMotion = e.matches; };
-    mq?.addEventListener("change", onMq);
-
-    /* ── Init ── */
-    const init = async () => {
-      const cur = ++buildId;
-      await loadAndSample(cur);
-      if (cur === buildId) {
-        raf = requestAnimationFrame(render);
-      }
-    };
-    init();
 
     return () => {
-      buildId++;
-      ro.disconnect();
-      mq?.removeEventListener("change", onMq);
-      container.removeEventListener("mouseenter", onEnter);
-      container.removeEventListener("mouseleave", onLeave);
-      container.removeEventListener("focusin", onEnter);
-      container.removeEventListener("focusout", onLeave);
-      if (raf !== null) cancelAnimationFrame(raf);
-      if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
+      destroyed = true;
+      const s = stageRef.current as (HTMLElement & { __pr_cleanup?: () => void }) | null;
+      s?.__pr_cleanup?.();
     };
-  }, [src, count, particleSize, globeRadiusFactor, stiffness]);
+  }, [src, fallback]);
+
+  /* ── Fallback: plain image ── */
+  if (fallback) {
+    return (
+      <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 2", overflow: "hidden" }}>
+        <img
+          src={src} alt={alt}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
-      ref={containerRef}
-      className={`relative block overflow-hidden ${className}`}
-      style={{ cursor: "crosshair" }}
+      ref={stageRef}
+      style={{ position: "relative", width: "100%", aspectRatio: "3 / 2",
+               overflow: "hidden", cursor: "crosshair" }}
     >
-      {/* Hidden source image — sampled for particle colours */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        ref={imgRef}
-        src={src}
-        alt={alt}
-        crossOrigin="anonymous"
-        aria-hidden="true"
-        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-                 objectFit: "cover", opacity: 0, pointerEvents: "none" }}
-      />
-
-      {/* Canvas — particles live here */}
       <canvas
         ref={canvasRef}
-        aria-hidden="true"
-        style={{
-          display: "block",
-          width: "100%",
-          height: "100%",
-          transition: `opacity ${crossfadeDuration}ms ease`,
-          opacity: imgVisible ? 0 : 1,
-        }}
-      />
-
-      {/* Real image — crossfades in when particles fully settle */}
-      <img
-        src={src}
-        alt={alt}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          transition: `opacity ${crossfadeDuration}ms ease`,
-          opacity: imgVisible ? 1 : 0,
-          pointerEvents: "none",
-        }}
+        aria-label={alt}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", touchAction: "none" }}
       />
     </div>
   );

@@ -43,12 +43,12 @@ function DesignsPage() {
       </section>
 
       <section className="px-5 pb-24 sm:px-8 lg:pb-32">
-        <div className="mx-auto flex max-w-[110rem] flex-col gap-24 lg:gap-32">
-          {projects.map((p) => (
+        <div className="mx-auto grid max-w-[110rem] gap-16 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-24">
+          {projects.map((p, i) => (
             <article
               key={p.slug}
               id={p.slug}
-              className="group scroll-mt-28"
+              className={`group scroll-mt-28 ${i % 3 === 0 ? "lg:col-span-2" : ""}`}
             >
               {/* Browser frame — clickable if live URL exists */}
               {p.url ? (
@@ -81,15 +81,13 @@ function DesignsPage() {
                 </BrowserFrame>
               )}
 
-              <div className="mt-6 grid gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+              <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
                 <div className="min-w-0">
-                  <h2 className="display text-5xl sm:text-6xl lg:text-7xl">{p.client}</h2>
+                  <h2 className="display text-4xl sm:text-5xl">{p.client}</h2>
                   <p className="eyebrow mt-3">
                     {p.type} — {p.year}
                   </p>
-                </div>
-                <div className="min-w-0">
-                  <p className="max-w-xl font-serif text-xl leading-snug text-foreground/85 sm:text-2xl">{p.result}</p>
+                  <p className="mt-3 max-w-md text-sm text-muted-foreground">{p.result}</p>
                   {p.tags && (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {p.tags.map((tag) => (
@@ -99,28 +97,22 @@ function DesignsPage() {
                       ))}
                     </div>
                   )}
-                  <div className="mt-5 flex flex-wrap items-center gap-5">
-                    <Link
-                      to="/designs"
-                      hash={p.slug}
-                      className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-primary"
+                  {p.url && (
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="link-draw mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-primary"
                     >
-                      View project
+                      Visit site
                       <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                    </Link>
-                    {p.url && (
-                      <a
-                        href={p.url}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className="link-draw inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-foreground/60 hover:text-foreground"
-                      >
-                        Visit site
-                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                      </a>
-                    )}
-                  </div>
+                    </a>
+                  )}
                 </div>
+                <ArrowUpRight
+                  className="h-6 w-6 shrink-0 text-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                  aria-hidden="true"
+                />
               </div>
             </article>
           ))}

@@ -167,17 +167,11 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
         flip ? "lg:[&>figure]:order-2" : ""
       }`}
     >
-      <motion.figure style={{ scale }} className="group origin-center">
+      <motion.figure style={{ scale }} className="origin-center">
         <BrowserFrame url={project.url ? new URL(project.url).hostname : `${project.slug}.com`}>
           <ParticleReveal
             src={project.image}
             alt={project.alt}
-            count={5000}
-            particleSize={2.2}
-            globeRadiusFactor={0.36}
-            stiffness={0.06}
-            crossfadeDuration={350}
-            className="aspect-[3/2] w-full"
           />
         </BrowserFrame>
       </motion.figure>
@@ -415,7 +409,7 @@ export function WhyStackweb() {
 const quotes = [
   {
     quote:
-      "They designed like it was their own brand on the line. The site sells better than we do.",
+      "They captured the soul of our brand — the bespoke tailoring, the curated collections, everything feels luxurious. Our online sales doubled within weeks.",
     name: "Ananya Rao",
     company: "Livaani",
   },
