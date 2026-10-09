@@ -3,7 +3,7 @@ import farcarfix from "@/assets/work-farcarfix.jpg";
 import primeflex from "@/assets/work-primeflex.jpg";
 import svlt from "@/assets/work-svlt.jpg";
 import asrinfra from "@/assets/work-asrinfra.jpg";
-import peoplix from "@/assets/work-peoplix.jpg";
+import peoplix from "@/assets/work-peoplix-new.jpg";
 
 export type Project = {
   slug: string;
