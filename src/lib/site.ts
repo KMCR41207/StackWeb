@@ -76,12 +76,12 @@ export const projects: Project[] = [
   {
     slug: "peoplix",
     client: "Peoplix",
-    type: "SaaS product UI",
-    result: "A full HR dashboard system shipped in six weeks.",
-    year: "2023",
+    type: "Workforce Management SaaS",
+    result: "A centralised workforce platform covering employee records, shift scheduling, time & attendance, leave workflows and labour analytics — built for teams that have outgrown spreadsheets.",
+    year: "2025",
     image: peoplix,
-    alt: "Peoplix HR dashboard with sidebar navigation, charts and an employee table",
-    tags: ["SaaS", "Dashboard", "Product UI"],
+    alt: "Peoplix workforce management dashboard with employee table, attendance charts and scheduling overview",
+    tags: ["SaaS", "HR Tech", "Workforce Management"],
     url: "https://peoplix.ai",
   },
 ];
