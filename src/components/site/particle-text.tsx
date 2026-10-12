@@ -341,7 +341,7 @@ export function ParticleText({
       aria-label={text}
     >
       <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" aria-hidden="true" />
-      <span className="absolute w-px h-px p-0 -m-px overflow-hidden clip-rect-0 whitespace-nowrap border-0">{text}</span>
+      <span className="sr-only">{text}</span>
     </div>
   );
 }
