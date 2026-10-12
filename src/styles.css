@@ -147,21 +147,36 @@
       min-width: 44px;
     }
   }
+
+  /* Consistent focus-visible ring sitewide */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
 }
 
 @utility display {
   font-family: var(--font-display);
   font-weight: 400;
   letter-spacing: -0.02em;
-  line-height: 0.86;
+  line-height: 0.88;
   text-transform: uppercase;
 }
 
 @utility eyebrow {
   font-size: 0.6875rem;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-muted-foreground);
+  font-weight: 500;
+}
+
+@utility caption {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+  line-height: 1.5;
 }
 
 /* Underline that draws in from the left on hover */
@@ -222,6 +237,23 @@
     pointer-events: none;
     opacity: 0.5;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+  }
+}
+
+/* Consistent focus ring for keyboard navigation */
+@utility focus-ring {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* Card border that illuminates on hover */
+@utility card-hover {
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  &:hover {
+    border-color: oklch(0.949 0.008 84 / 28%);
+    box-shadow: 0 0 0 1px oklch(0.949 0.008 84 / 8%),
+                0 20px 60px -20px rgba(0, 0, 0, 0.6);
   }
 }
 
