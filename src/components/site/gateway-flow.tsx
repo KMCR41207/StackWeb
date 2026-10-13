@@ -15,30 +15,47 @@ export function GatewayFlow() {
     let width = 0;
     let height = 0;
     let rafId = 0;
+    let isVisible = true;
 
     const explosions: { x: number; y: number; radius: number; life: number }[] = [];
 
+    // Use ResizeObserver instead of window resize — catches parent-only layout changes
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       width = canvas.offsetWidth;
       height = canvas.offsetHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      if (width === 0 || height === 0) return;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
       ctx.scale(dpr, dpr);
     };
 
     resize();
-    window.addEventListener("resize", resize);
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas.parentElement ?? canvas);
+
+    // Pause RAF when scrolled off-screen
+    const io = new IntersectionObserver(
+      ([entry]) => { isVisible = entry?.isIntersecting ?? true; },
+      { threshold: 0 }
+    );
+    io.observe(canvas);
 
     const onClick = (e: MouseEvent) => {
-      explosions.push({ x: e.clientX, y: e.clientY, radius: 0, life: 1 });
+      const rect = canvas.getBoundingClientRect();
+      explosions.push({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        radius: 0,
+        life: 1,
+      });
     };
-    window.addEventListener("click", onClick);
+    canvas.addEventListener("click", onClick);
 
     const numPaths = 80;
     const paths = Array.from({ length: numPaths }, (_, i) => ({
       isLeft: i % 2 === 0,
-      startY: (i / numPaths) * height * 1.4 - height * 0.2,
+      startY: (i / numPaths) * (height || window.innerHeight) * 1.4 - (height || window.innerHeight) * 0.2,
       particles: [{ t: Math.random(), speed: 0.0015 + Math.random() * 0.002 }],
     }));
 
@@ -57,18 +74,18 @@ export function GatewayFlow() {
     };
 
     const render = () => {
+      rafId = requestAnimationFrame(render);
+      if (!isVisible) return; // skip draw when off-screen
+
       ctx.clearRect(0, 0, width, height);
       const centerX = width / 2;
       const centerY = height / 2;
 
-      explosions.forEach((exp) => {
+      for (let i = explosions.length - 1; i >= 0; i--) {
+        const exp = explosions[i]!;
         exp.radius += 15;
         exp.life -= 0.015;
-      });
-      // remove dead explosions
-      for (let i = explosions.length - 1; i >= 0; i--) {
-        const exp = explosions[i];
-        if (exp && exp.life <= 0) explosions.splice(i, 1);
+        if (exp.life <= 0) explosions.splice(i, 1);
       }
 
       paths.forEach((path) => {
@@ -106,7 +123,7 @@ export function GatewayFlow() {
             const dx = pos.x - exp.x;
             const dy = pos.y - exp.y;
             const dist = Math.hypot(dx, dy);
-            if (dist < exp.radius + 120 && dist > exp.radius - 120) {
+            if (dist > 0 && dist < exp.radius + 120 && dist > exp.radius - 120) {
               const force = (1 - Math.abs(dist - exp.radius) / 120) * exp.life;
               dxTotal += (dx / dist) * force * 80;
               dyTotal += (dy / dist) * force * 80;
@@ -119,16 +136,15 @@ export function GatewayFlow() {
           ctx.fillRect(pos.x - 1.5, pos.y - 1.5, 3, 3);
         });
       });
-
-      rafId = requestAnimationFrame(render);
     };
 
     render();
 
     return () => {
       cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("click", onClick);
+      ro.disconnect();
+      io.disconnect();
+      canvas.removeEventListener("click", onClick);
     };
   }, [reduced]);
 
@@ -138,6 +154,7 @@ export function GatewayFlow() {
       role="presentation"
       aria-hidden="true"
       className="absolute inset-0 h-full w-full"
+      style={{ touchAction: "none" }}
     />
   );
 }
