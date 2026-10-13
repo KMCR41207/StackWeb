@@ -166,7 +166,7 @@ export function ParticleReveal({ src, alt }: ParticleRevealProps) {
       }
 
       /* ── Motion springs ── */
-      function attachMotion(ov: ReturnType<typeof buildOverlay>) {
+      function attachMotion(ov: ReturnType<typeof buildOverlay>, stopRender: () => void) {
         threeEffect(globe, { value: globeValue });
         threeEffect(ov.material as THREE.MeshBasicMaterial, {
           opacity: transformValue(() => highResolutionMix(globeValue.get())),
@@ -174,10 +174,13 @@ export function ParticleReveal({ src, alt }: ParticleRevealProps) {
 
         let locked = false;
 
-        /* initial: globe → image */
+        /* initial: globe → image; stop the render loop once settled */
         animate(globeValue, 0, {
           type: "spring", stiffness: 55, damping: 16, mass: 1, delay: 0.8,
-          onComplete: () => { locked = true; },
+          onComplete: () => {
+            locked = true;
+            stopRender(); // no more RAF needed — static image
+          },
         });
 
         /* hover on the card wrapper */
@@ -235,12 +238,23 @@ export function ParticleReveal({ src, alt }: ParticleRevealProps) {
       ro.observe(stage!);
       resize();
 
-      const detach   = attachMotion(overlay);
+      // Pause rendering when off-screen to save CPU/GPU
+      let isVisible = true;
+      const io = new IntersectionObserver(
+        ([entry]) => { isVisible = entry?.isIntersecting ?? true; },
+        { threshold: 0 }
+      );
+      io.observe(stage!);
+
       canvas!.dataset.ready = "true";
-      const stopRaf  = frame.render(() => renderer.render(scene, camera), true);
+      const stopRaf = frame.render(() => {
+        if (isVisible) renderer.render(scene, camera);
+      }, true);
+
+      const detach = attachMotion(overlay, stopRaf);
 
       (stage as HTMLElement & { __pr_cleanup?: () => void }).__pr_cleanup = () => {
-        detach(); ro.disconnect(); stopRaf(); renderer.dispose();
+        detach(); ro.disconnect(); io.disconnect(); stopRaf(); renderer.dispose();
       };
     }
 
