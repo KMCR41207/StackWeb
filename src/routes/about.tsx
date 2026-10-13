@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MaskedLinesOnScroll, Rise } from "@/components/site/motion-primitives";
 
-const title = "About — Stackweb | UK Web Design Studio";
+const title = "About — Stackweb | Web Design Studio";
 const description =
-  "Stackweb is a small web design studio building custom sites on demand: art direction, front-end craft and a launch you can measure.";
+  "Stackweb is a web design studio building custom sites on demand: art direction, front-end craft and a launch you can measure.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -101,11 +101,11 @@ function AboutPage() {
           {principles.map((p, i) => (
             <Rise key={p.t}>
               <div
-                className={`grid gap-6 border-t border-hairline pt-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-16 ${
+                className={`grid gap-6 border-t border-hairline pt-8 transition-colors duration-300 hover:border-foreground/25 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-16 ${
                   i % 2 === 1 ? "lg:pl-[12%]" : ""
                 }`}
               >
-                <p className="font-serif text-4xl text-primary">0{i + 1}</p>
+                <p className="font-serif text-4xl text-primary sm:text-5xl">0{i + 1}</p>
                 <div>
                   <h2 className="display text-4xl sm:text-6xl">{p.t}</h2>
                   <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
