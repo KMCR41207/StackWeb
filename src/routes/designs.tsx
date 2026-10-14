@@ -52,8 +52,9 @@ function DesignsPage() {
             >
               {/* Browser frame — clickable if live URL exists */}
               {p.url ? (
-                <a href={p.url} target="_blank" rel="noreferrer noopener" aria-label={`Visit ${p.client} website`}>
-                  <BrowserFrame url={new URL(p.url).hostname}>
+                <a href={p.url} target="_blank" rel="noreferrer noopener" aria-label={`Visit ${p.client} website`}
+                  className="block transition-opacity duration-300 hover:opacity-95">
+                  <BrowserFrame url={new URL(p.url).hostname} className="card-hover">
                     <div className="overflow-hidden">
                       <img
                         src={p.image}
@@ -61,13 +62,14 @@ function DesignsPage() {
                         width={1440}
                         height={960}
                         loading="lazy"
-                        className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+                        decoding="async"
+                        className="block w-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.025]"
                       />
                     </div>
                   </BrowserFrame>
                 </a>
               ) : (
-                <BrowserFrame url={`${p.slug}.com`}>
+                <BrowserFrame url={`${p.slug}.com`} className="card-hover">
                   <div className="overflow-hidden">
                     <img
                       src={p.image}
@@ -75,7 +77,8 @@ function DesignsPage() {
                       width={1440}
                       height={960}
                       loading="lazy"
-                      className="block w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+                      decoding="async"
+                      className="block w-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.025]"
                     />
                   </div>
                 </BrowserFrame>
@@ -87,11 +90,11 @@ function DesignsPage() {
                   <p className="eyebrow mt-3">
                     {p.type} — {p.year}
                   </p>
-                  <p className="mt-3 max-w-md text-sm text-muted-foreground">{p.result}</p>
+                  <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{p.result}</p>
                   {p.tags && (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {p.tags.map((tag) => (
-                        <span key={tag} className="border border-hairline px-2.5 py-1 text-[11px] tracking-[0.14em] uppercase text-muted-foreground">
+                        <span key={tag} className="border border-hairline px-2.5 py-1 text-[11px] tracking-[0.14em] uppercase text-muted-foreground transition-colors duration-200 hover:border-foreground/30 hover:text-foreground">
                           {tag}
                         </span>
                       ))}
@@ -102,7 +105,7 @@ function DesignsPage() {
                       href={p.url}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="link-draw mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-primary"
+                      className="link-draw mt-5 inline-flex items-center gap-2 text-[12px] tracking-[0.18em] uppercase text-primary"
                     >
                       Visit site
                       <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -110,7 +113,7 @@ function DesignsPage() {
                   )}
                 </div>
                 <ArrowUpRight
-                  className="h-6 w-6 shrink-0 text-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                  className="h-6 w-6 shrink-0 text-primary transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1"
                   aria-hidden="true"
                 />
               </div>
