@@ -7,7 +7,7 @@ import {
   useTransform,
   useReducedMotion,
 } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { BrowserFrame } from "./browser-frame";
 import { GatewayFlow } from "./gateway-flow";
@@ -137,6 +137,7 @@ export function Hero() {
                       width={720}
                       height={480}
                       loading="eager"
+                      decoding="async"
                       className="block w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
                     />
                   </div>
@@ -167,7 +168,7 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
         flip ? "lg:[&>figure]:order-2" : ""
       }`}
     >
-      <motion.figure style={{ scale }} className="origin-center">
+      <motion.figure style={{ scale, willChange: "transform" }} className="origin-center">
         <BrowserFrame url={project.url ? new URL(project.url).hostname : `${project.slug}.com`}>
           <ParticleReveal
             src={project.image}
@@ -292,7 +293,7 @@ export function Process() {
           >
             <motion.div
               className="h-full w-px origin-top bg-primary"
-              style={{ scaleY: progress }}
+              style={{ scaleY: progress, willChange: "transform" }}
             />
           </div>
 
@@ -391,12 +392,14 @@ export function WhyStackweb() {
             <p className="eyebrow text-primary">Stackweb</p>
           </div>
           {comparison.map(([a, b]) => (
-            <Rise key={a} className="contents">
-              <div className="bg-background px-6 py-6 text-muted-foreground line-through decoration-foreground/20">
+            <Fragment key={a}>
+              <div className="bg-background px-6 py-6 text-muted-foreground line-through decoration-foreground/20 transition-opacity duration-300 hover:opacity-80">
                 {a}
               </div>
-              <div className="bg-background px-6 py-6 text-foreground">{b}</div>
-            </Rise>
+              <div className="bg-background px-6 py-6 text-foreground">
+                {b}
+              </div>
+            </Fragment>
           ))}
         </div>
       </div>
@@ -450,6 +453,7 @@ export function Testimonials() {
 
       <motion.div
         className="mt-12 flex w-max gap-6"
+        style={{ willChange: "transform" }}
         animate={reduced ? { x: 0 } : { x: ["0%", "-50%"] }}
         transition={{ duration: 60, ease: "linear", repeat: Infinity }}
       >
