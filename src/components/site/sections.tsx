@@ -491,7 +491,7 @@ export function FinalCta() {
           <div className="mt-10 flex flex-wrap items-center gap-6">
             <Link
               to="/project-form"
-              className="group inline-flex items-center gap-4 border border-primary-foreground/40 px-8 py-4 text-[12px] tracking-[0.2em] uppercase transition-colors duration-300 hover:bg-primary-foreground hover:text-primary"
+              className="group inline-flex items-center gap-4 border border-primary-foreground/40 px-8 py-4 text-[12px] tracking-[0.2em] uppercase transition-[background-color,border-color,color] duration-300 hover:border-primary-foreground hover:bg-primary-foreground hover:text-primary"
             >
               Start a Project
               <ArrowRight
