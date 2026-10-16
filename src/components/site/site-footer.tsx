@@ -72,8 +72,22 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[110rem] items-center justify-between gap-4 border-t border-hairline px-5 py-5 text-xs text-muted-foreground sm:px-8">
-        <p>© {new Date().getFullYear()} Stackweb. All rights reserved.</p>
+      <div className="mx-auto flex max-w-[110rem] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-hairline px-5 py-5 text-xs text-muted-foreground sm:px-8">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <p>© {new Date().getFullYear()} Stackweb. All rights reserved.</p>
+          <Link
+            to="/privacy-policy"
+            className="tracking-[0.12em] uppercase transition-colors hover:text-foreground"
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            to="/terms-of-service"
+            className="tracking-[0.12em] uppercase transition-colors hover:text-foreground"
+          >
+            Terms of Service
+          </Link>
+        </div>
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
