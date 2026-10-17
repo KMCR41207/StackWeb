@@ -15,7 +15,9 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as DesignsRouteImport } from './routes/designs'
 import { Route as HelpRouteImport } from './routes/help'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ProjectFormRouteImport } from './routes/project-form'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,9 +49,19 @@ const HelpRoute = HelpRouteImport.update({
   path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectFormRoute = ProjectFormRouteImport.update({
   id: '/project-form',
   path: '/project-form',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -60,7 +72,9 @@ export interface FileRoutesByFullPath {
   '/admin-login': typeof AdminLoginRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/project-form': typeof ProjectFormRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,7 +83,9 @@ export interface FileRoutesByTo {
   '/admin-login': typeof AdminLoginRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/project-form': typeof ProjectFormRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +95,9 @@ export interface FileRoutesById {
   '/admin-login': typeof AdminLoginRoute
   '/designs': typeof DesignsRoute
   '/help': typeof HelpRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/project-form': typeof ProjectFormRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,7 +108,9 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/designs'
     | '/help'
+    | '/privacy-policy'
     | '/project-form'
+    | '/terms-of-service'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,7 +119,9 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/designs'
     | '/help'
+    | '/privacy-policy'
     | '/project-form'
+    | '/terms-of-service'
   id:
     | '__root__'
     | '/'
@@ -108,7 +130,9 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/designs'
     | '/help'
+    | '/privacy-policy'
     | '/project-form'
+    | '/terms-of-service'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,7 +142,9 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   DesignsRoute: typeof DesignsRoute
   HelpRoute: typeof HelpRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProjectFormRoute: typeof ProjectFormRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,11 +191,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/project-form': {
       id: '/project-form'
       path: '/project-form'
       fullPath: '/project-form'
       preLoaderRoute: typeof ProjectFormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -182,7 +222,9 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   DesignsRoute: DesignsRoute,
   HelpRoute: HelpRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProjectFormRoute: ProjectFormRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
