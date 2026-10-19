@@ -120,9 +120,9 @@ export function Hero() {
             </div>
           </Rise>
 
-          {/* Project thumbnail strip */}
+          {/* Project thumbnail strip — 1 col on tiny, 3 cols sm+ */}
           <motion.div
-            className="mt-14 grid grid-cols-3 gap-3 lg:mt-20 lg:gap-5"
+            className="mt-14 grid grid-cols-1 gap-3 xs:grid-cols-3 sm:grid-cols-3 lg:mt-20 lg:gap-5"
             initial={reduced ? { opacity: 1 } : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
@@ -168,7 +168,7 @@ function WorkItem({ project, index }: { project: (typeof projects)[number]; inde
         flip ? "lg:[&>figure]:order-2" : ""
       }`}
     >
-      <motion.figure style={{ scale, willChange: "transform" }} className="origin-center">
+      <motion.figure style={{ scale, willChange: "transform" }} className="origin-center w-full">
         <BrowserFrame url={project.url ? new URL(project.url).hostname : `${project.slug}.com`}>
           <ParticleReveal
             src={project.image}
@@ -452,7 +452,7 @@ export function Testimonials() {
       <h2 className="eyebrow px-5 sm:px-8">What clients say</h2>
 
       <motion.div
-        className="mt-12 flex w-max gap-6"
+        className="mt-12 flex w-max gap-4 pl-5 sm:gap-6 sm:pl-8"
         style={{ willChange: "transform" }}
         animate={reduced ? { x: 0 } : { x: ["0%", "-50%"] }}
         transition={{ duration: 60, ease: "linear", repeat: Infinity }}
@@ -460,7 +460,7 @@ export function Testimonials() {
         {row.map((q, i) => (
           <figure
             key={`${q.name}-${i}`}
-            className="w-[85vw] shrink-0 border border-hairline bg-surface p-8 sm:w-[38rem] sm:p-12"
+            className="w-[90vw] shrink-0 border border-hairline bg-surface p-6 sm:w-[38rem] sm:p-12"
           >
             <blockquote className="font-serif text-2xl leading-tight sm:text-4xl">
               “{q.quote}”
