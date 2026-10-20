@@ -6,7 +6,7 @@ import { SITE_TWITTER, SITE_INSTAGRAM, SITE_LINKEDIN } from "@/lib/constants";
 export function SiteFooter() {
   return (
     <footer className="border-t border-hairline">
-      <div className="mx-auto grid max-w-[110rem] gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+      <div className="mx-auto grid max-w-[110rem] gap-10 px-5 py-12 sm:px-8 sm:py-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div>
           <p className="display text-5xl sm:text-7xl" aria-label="Stackweb">Stackweb</p>
           <p className="mt-4 max-w-sm text-sm text-muted-foreground">
@@ -19,10 +19,10 @@ export function SiteFooter() {
 
         <div className="flex flex-wrap items-end gap-x-10 gap-y-6">
           <nav aria-label="Footer navigation">
-            <ul className="space-y-2 text-[13px] tracking-[0.14em] uppercase">
+            <ul className="space-y-1 text-[13px] tracking-[0.14em] uppercase sm:space-y-2">
               {navLinks.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="link-draw text-foreground/80 hover:text-foreground">
+                  <Link to={l.to} className="link-draw block py-1.5 text-foreground/80 hover:text-foreground sm:py-0">
                     {l.label}
                   </Link>
                 </li>
@@ -30,7 +30,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/project-form"
-                  className="link-draw text-foreground/80 hover:text-foreground"
+                  className="link-draw block py-1.5 text-foreground/80 hover:text-foreground sm:py-0"
                 >
                   Start a Project
                 </Link>
@@ -38,13 +38,13 @@ export function SiteFooter() {
             </ul>
           </nav>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1 sm:gap-3">
             <a
               href={SITE_INSTAGRAM}
               target="_blank"
               rel="noreferrer noopener"
               aria-label="Stackweb on Instagram"
-              className="inline-flex items-center gap-2 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary"
+              className="inline-flex items-center gap-2 py-1.5 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary sm:py-0"
             >
               <Instagram className="h-4 w-4" aria-hidden="true" />
               Instagram
@@ -54,7 +54,7 @@ export function SiteFooter() {
               target="_blank"
               rel="noreferrer noopener"
               aria-label="Stackweb on Twitter / X"
-              className="inline-flex items-center gap-2 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary"
+              className="inline-flex items-center gap-2 py-1.5 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary sm:py-0"
             >
               Twitter / X
             </a>
@@ -63,7 +63,7 @@ export function SiteFooter() {
               target="_blank"
               rel="noreferrer noopener"
               aria-label="Stackweb on LinkedIn"
-              className="inline-flex items-center gap-2 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary"
+              className="inline-flex items-center gap-2 py-1.5 text-[13px] tracking-[0.14em] uppercase text-foreground/80 hover:text-primary sm:py-0"
             >
               <Linkedin className="h-4 w-4" aria-hidden="true" />
               LinkedIn
