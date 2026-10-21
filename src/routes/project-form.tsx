@@ -21,7 +21,7 @@ export const Route = createFileRoute("/project-form")({
 });
 
 const fieldClass =
-  "w-full border-b border-input bg-transparent py-3 text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-primary font-serif";
+  "w-full border-b border-input bg-transparent py-3 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-primary font-serif sm:text-lg";
 
 const CUSTOM = "Request a custom quote";
 
@@ -224,7 +224,7 @@ function TypeDetail({ option, onClose }: { option: ProjectTypeOption; onClose: (
       role="dialog"
       aria-label={`Details: ${option.label}`}
       tabIndex={-1}
-      className="absolute right-0 top-full z-50 mt-2 w-80 border border-hairline bg-background p-5 shadow-[0_8px_40px_rgba(0,0,0,0.7)] outline-none sm:w-96"
+      className="absolute inset-x-0 top-full z-50 mt-2 border border-hairline bg-background p-5 shadow-[0_8px_40px_rgba(0,0,0,0.7)] outline-none sm:inset-x-auto sm:right-0 sm:w-96"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -294,7 +294,7 @@ function ProjectTypeSelect({ value, onChange }: { value: string; onChange: (v: s
 
       {open && (
         <ul role="listbox" aria-label="Project type"
-          className="absolute left-0 right-0 top-full z-40 border border-hairline bg-background shadow-[0_8px_40px_rgba(0,0,0,0.7)]">
+          className="absolute left-0 right-0 top-full z-40 max-h-[60vh] overflow-y-auto border border-hairline bg-background shadow-[0_8px_40px_rgba(0,0,0,0.7)]">
           {projectTypeOptions.map((opt) => {
             const isSel = opt.label === value;
             return (
@@ -380,7 +380,7 @@ function DynamicSelect({
         <ul
           role="listbox"
           aria-label={label}
-          className="absolute left-0 right-0 top-full z-40 border border-hairline bg-background shadow-[0_8px_40px_rgba(0,0,0,0.7)]"
+          className="absolute left-0 right-0 top-full z-40 max-h-[50vh] overflow-y-auto border border-hairline bg-background shadow-[0_8px_40px_rgba(0,0,0,0.7)]"
         >
           {options.map((opt) => {
             const isSel = opt.value === value || (opt.value === CUSTOM && isCustom);
@@ -475,8 +475,8 @@ function ProjectFormPage() {
   }
 
   return (
-    <section className="px-5 pt-32 pb-24 sm:px-8 lg:pt-44">
-      <div className="mx-auto grid max-w-[110rem] gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <section className="px-5 pt-28 pb-20 sm:px-8 sm:pt-32 lg:pt-44 lg:pb-24">
+      <div className="mx-auto grid max-w-[110rem] gap-10 lg:gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div>
           <h1 className="display text-[clamp(2.6rem,8vw,7rem)]">
             <MaskedLinesOnScroll lines={["Start a", "project"]} />
@@ -500,7 +500,7 @@ function ProjectFormPage() {
           </div>
         ) : (
           <form onSubmit={onSubmit} noValidate className="space-y-10">
-            <div className="grid gap-10 sm:grid-cols-2">
+            <div className="grid gap-8 sm:gap-10 sm:grid-cols-2">
               <div>
                 <label htmlFor="name" className="eyebrow block">Your name</label>
                 <input
