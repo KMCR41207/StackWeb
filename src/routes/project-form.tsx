@@ -425,6 +425,7 @@ function DynamicSelect({
 /* ─── Main page ─── */
 function ProjectFormPage() {
   const { submit, status, error, isSubmitting } = useEnquirySubmit();
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [projectType, setProjectType] = useState(projectTypeOptions[0]?.label ?? "Static Website");
   const currentType = projectTypeOptions.find((o) => o.label === projectType) ?? projectTypeOptions[0]!;
 
@@ -451,8 +452,25 @@ function ProjectFormPage() {
     const budgetVal = String(data.get("budget") ?? "").trim();
     const timelineVal = String(data.get("timeline") ?? "").trim();
     const details = String(data.get("details") ?? "").trim();
-    if (!name || !email || !details) return;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+
+    // Client-side validation
+    const newErrors: Record<string, string> = {};
+    if (!name) newErrors.name = "Name is required.";
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Enter a valid email address.";
+    }
+    if (!details) newErrors.details = "Please describe your project.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
+      // Focus first invalid field
+      const first = Object.keys(newErrors)[0];
+      if (first) (e.currentTarget.elements.namedItem(first) as HTMLElement | null)?.focus();
+      return;
+    }
+    setFieldErrors({});
     submit({ name, company, email, projectType, budget: budgetVal, timeline: timelineVal, details });
   }
 
@@ -485,7 +503,15 @@ function ProjectFormPage() {
             <div className="grid gap-10 sm:grid-cols-2">
               <div>
                 <label htmlFor="name" className="eyebrow block">Your name</label>
-                <input id="name" name="name" className={fieldClass} placeholder="Jane Doe" />
+                <input
+                  id="name" name="name" className={fieldClass}
+                  placeholder="Jane Doe" required
+                  aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                  aria-invalid={!!fieldErrors.name}
+                />
+                {fieldErrors.name && (
+                  <p id="name-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.name}</p>
+                )}
               </div>
               <div>
                 <label htmlFor="company" className="eyebrow block">Company</label>
@@ -493,7 +519,15 @@ function ProjectFormPage() {
               </div>
               <div>
                 <label htmlFor="email" className="eyebrow block">Email</label>
-                <input id="email" name="email" type="email" className={fieldClass} placeholder="jane@company.com" />
+                <input
+                  id="email" name="email" type="email" className={fieldClass}
+                  placeholder="jane@company.com" required
+                  aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                  aria-invalid={!!fieldErrors.email}
+                />
+                {fieldErrors.email && (
+                  <p id="email-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>
+                )}
               </div>
               <div>
                 <label className="eyebrow block">Project type</label>
@@ -521,7 +555,14 @@ function ProjectFormPage() {
               <label htmlFor="details" className="eyebrow block">About the project</label>
               <textarea id="details" name="details" rows={5}
                 className={`${fieldClass} resize-none`}
-                placeholder="What are you building, and what does success look like?" />
+                placeholder="What are you building, and what does success look like?"
+                required
+                aria-describedby={fieldErrors.details ? "details-error" : undefined}
+                aria-invalid={!!fieldErrors.details}
+              />
+              {fieldErrors.details && (
+                <p id="details-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.details}</p>
+              )}
             </div>
 
             {status === "error" && error && (
