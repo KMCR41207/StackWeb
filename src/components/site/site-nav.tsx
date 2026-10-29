@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { navLinks } from "@/lib/site";
@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils";
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Close mobile menu on route change
+  useEffect(() => { setOpen(false); }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -39,13 +43,23 @@ export function SiteNav() {
 
         <div className="flex shrink-0 items-center gap-8">
           <ul className="hidden items-center gap-8 text-[13px] tracking-[0.14em] uppercase md:flex">
-            {navLinks.map((l) => (
-              <li key={l.to}>
-                <Link to={l.to} className="link-draw text-foreground/80 hover:text-foreground">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((l) => {
+              const isActive = pathname === l.to || pathname.startsWith(l.to + "/");
+              return (
+                <li key={l.to}>
+                  <Link
+                    to={l.to}
+                    className={cn(
+                      "link-draw",
+                      isActive ? "text-foreground" : "text-foreground/80 hover:text-foreground",
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
           <Link
@@ -59,6 +73,7 @@ export function SiteNav() {
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
+            aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
             className="text-foreground md:hidden"
           >
@@ -68,21 +83,24 @@ export function SiteNav() {
       </nav>
 
       {open && (
-        <div className="border-t border-hairline bg-background px-5 pb-8 md:hidden">
+        <div id="mobile-menu" className="border-t border-hairline bg-background px-5 pb-8 md:hidden">
           <ul className="display space-y-2 pt-6 text-4xl">
-            {navLinks.map((l) => (
-              <li key={l.to}>
-                <Link to={l.to} onClick={() => setOpen(false)} className="block">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((l) => {
+              const isActive = pathname === l.to || pathname.startsWith(l.to + "/");
+              return (
+                <li key={l.to}>
+                  <Link
+                    to={l.to}
+                    className={cn("block", isActive && "text-primary")}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              );
+            })}
             <li>
-              <Link
-                to="/project-form"
-                onClick={() => setOpen(false)}
-                className="block text-primary"
-              >
+              <Link to="/project-form" className="block text-primary">
                 Start a Project
               </Link>
             </li>
