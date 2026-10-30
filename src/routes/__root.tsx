@@ -4,10 +4,11 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, useCallback, lazy, Suspense, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -84,14 +85,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Stackweb is a UK-based web design studio building custom, high-performance websites. Fixed price, fast delivery.",
+          "Stackweb is a web design studio building custom, high-performance websites. Fixed price, fast delivery.",
       },
       { name: "author", content: "Stackweb" },
       { property: "og:title", content: "Stackweb — Custom websites, built on demand" },
       {
         property: "og:description",
         content:
-          "Stackweb is a UK-based web design studio building custom, high-performance websites. Fixed price, fast delivery.",
+          "Stackweb is a web design studio building custom, high-performance websites. Fixed price, fast delivery.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://stackweb.net" },
@@ -131,6 +132,12 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        {/* Pre-paint Obsidian overlay to prevent flash before intro loads */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=location.pathname;if(p!=="/")return;var s=sessionStorage.getItem("sw-intro-played");var u=new URLSearchParams(location.search);if(u.get("intro")==="0")return;if(s==="1"&&u.get("intro")!=="1")return;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches)return;var d=document.createElement("div");d.id="sw-intro-precover";d.style.cssText="position:fixed;inset:0;z-index:99997;background:#080B12;pointer-events:none;";document.body.appendChild(d)}catch(e){}})();`,
+          }}
+        />
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:text-sm">
           Skip to content
         </a>
@@ -141,8 +148,41 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+// Lazy-load the intro to keep the critical bundle small
+const LazyIntroOverlay = lazy(() =>
+  import("@/components/site/intro/intro-overlay").then((m) => ({
+    default: m.IntroOverlay,
+  }))
+);
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Always false on server to avoid hydration mismatch; set true on client mount
+  const [introActive, setIntroActive] = useState(false);
+
+  useEffect(() => {
+    if (pathname === "/") {
+      setIntroActive(true);
+    }
+    // Only run once on mount — pathname at mount time determines intro
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleIntroComplete = useCallback(() => {
+    setIntroActive(false);
+    // Remove the pre-paint cover
+    const cover = document.getElementById("sw-intro-precover");
+    if (cover) cover.remove();
+  }, []);
+
+  useEffect(() => {
+    // If not on homepage, remove precover immediately
+    if (pathname !== "/") {
+      const cover = document.getElementById("sw-intro-precover");
+      if (cover) cover.remove();
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const remove = () => {
@@ -181,6 +221,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {introActive && pathname === "/" && (
+        <Suspense fallback={null}>
+          <LazyIntroOverlay onComplete={handleIntroComplete} />
+        </Suspense>
+      )}
       <SiteNav />
       <main id="main">
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
