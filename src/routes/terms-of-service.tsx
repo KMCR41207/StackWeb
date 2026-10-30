@@ -91,7 +91,7 @@ const sections = [
   {
     heading: "10. Governing Law",
     body: [
-      `These Terms are governed by and construed in accordance with the laws of England and Wales. Any disputes arising in connection with these Terms shall be subject to the exclusive jurisdiction of the courts of England and Wales.`,
+      `These Terms are governed by and construed in accordance with the laws of India. Any disputes arising in connection with these Terms shall be subject to the exclusive jurisdiction of the courts of India.`,
     ],
   },
   {
@@ -118,7 +118,7 @@ function TermsOfServicePage() {
           </h1>
           <Rise delay={0.15}>
             <p className="mt-6 max-w-xl font-serif text-xl leading-snug text-foreground/85 sm:text-2xl">
-              Last updated: January 2025 · Governing law: England and Wales
+              Last updated: January 2025 · Governing law: India
             </p>
           </Rise>
         </div>

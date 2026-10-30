@@ -49,7 +49,7 @@ function AboutPage() {
           </h1>
           <Rise delay={0.2}>
             <p className="mt-6 max-w-lg font-serif text-xl leading-snug text-foreground/70 sm:text-2xl">
-              Based in the UK. Building for brands worldwide since 2022.
+              Based in India. Building for brands worldwide since 2022.
             </p>
           </Rise>
         </div>

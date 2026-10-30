@@ -13,7 +13,7 @@ export function SiteFooter() {
             Custom websites built on demand for brands that care how they look.
           </p>
           <p className="mt-3 text-xs text-muted-foreground/60 tracking-[0.12em] uppercase">
-            Based in the UK · Working globally
+            Based in India · Working globally
           </p>
         </div>
 

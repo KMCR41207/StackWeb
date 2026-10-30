@@ -78,9 +78,9 @@ const sections = [
   {
     heading: "8. Your Rights",
     body: [
-      `Under UK GDPR and the Data Protection Act 2018, you have the right to: access a copy of your personal data; request correction of inaccurate data; request deletion of your data; object to processing; and request restriction of processing.`,
+      `Under applicable Indian data protection law, you have the right to: access a copy of your personal data; request correction of inaccurate data; request deletion of your data; object to processing; and request restriction of processing.`,
       `To exercise any of these rights, email us at ${SITE_EMAIL}. We will respond within 30 days. There is no charge for exercising these rights.`,
-      `If you are unhappy with how we handle your data, you have the right to lodge a complaint with the Information Commissioner's Office (ICO) at ico.org.uk.`,
+      `If you are unhappy with how we handle your data, you may raise a complaint with the relevant data protection authority in your jurisdiction.`,
     ],
   },
   {
@@ -93,7 +93,7 @@ const sections = [
   {
     heading: "10. International Transfers",
     body: [
-      `We are based in the UK and your data is primarily stored and processed there. Where any processing occurs outside the UK (for example, via Cloudflare's global network), appropriate safeguards are in place in accordance with UK GDPR requirements.`,
+      `We are based in India and your data is primarily stored and processed there. Where any processing occurs outside India (for example, via Cloudflare's global network), appropriate safeguards are in place in accordance with applicable data protection requirements.`,
     ],
   },
   {
@@ -126,7 +126,7 @@ function PrivacyPolicyPage() {
           </h1>
           <Rise delay={0.15}>
             <p className="mt-6 max-w-xl font-serif text-xl leading-snug text-foreground/85 sm:text-2xl">
-              Last updated: January 2025 · UK GDPR compliant
+              Last updated: January 2025 · India
             </p>
           </Rise>
         </div>
