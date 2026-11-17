@@ -77,14 +77,15 @@ export function IntroOverlay({ onComplete }: { onComplete: () => void }) {
     const el = mountRef.current;
     if (!el) return;
 
+    // Don't call markPlayed() when intro is skipped by reduced-motion or ?intro=0
     if (!shouldPlay()) {
-      handleComplete();
+      onComplete();
       return;
     }
 
     const freezeAt = getIntroT();
+    let cancelled = false;
 
-    // Wait for Anton font, but with a 1.5s budget
     const fontPromise = document.fonts
       ? document.fonts.load('400 72px "Anton"').catch(() => {})
       : Promise.resolve();
@@ -92,7 +93,7 @@ export function IntroOverlay({ onComplete }: { onComplete: () => void }) {
     const timeout = new Promise<void>((resolve) => setTimeout(resolve, 1500));
 
     Promise.race([fontPromise, timeout]).then(() => {
-      if (!el.isConnected) return;
+      if (cancelled || !el.isConnected) return;
 
       try {
         const intro = createIntro({
@@ -100,7 +101,6 @@ export function IntroOverlay({ onComplete }: { onComplete: () => void }) {
           onComplete: handleComplete,
           freezeAt,
         });
-
         introRef.current = intro;
       } catch (err) {
         console.error("[sw-intro] failed to create intro:", err);
@@ -109,13 +109,14 @@ export function IntroOverlay({ onComplete }: { onComplete: () => void }) {
     });
 
     return () => {
+      cancelled = true;
       if (introRef.current) {
         introRef.current.destroy();
         introRef.current = null;
       }
       mountedRef.current = false;
     };
-  }, [handleComplete]);
+  }, [handleComplete, onComplete]);
 
   return (
     <div
