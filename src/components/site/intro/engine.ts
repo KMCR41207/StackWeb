@@ -458,8 +458,8 @@ export function createIntro(opts: IntroOptions) {
         zoom = 1 + easeInOutExpo(pushProg) * 38;
       }
 
-      // Apply rotation during push
-      if (t >= T.push) {
+      // Apply rotation during push — only save when we will actually restore
+      if (pushProg > 0) {
         ctx.save();
         ctx.translate(W / 2, H / 2);
         ctx.rotate(Math.sin(pushProg * Math.PI) * 0.025);
