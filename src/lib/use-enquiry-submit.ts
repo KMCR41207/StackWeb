@@ -13,11 +13,50 @@ export interface EnquiryFormData {
   details: string;
 }
 
+function generateKey(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for environments without crypto.randomUUID
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0;
+    return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+function sanitizeError(err: unknown): string {
+  const msg = err instanceof Error ? err.message : "";
+  if (
+    msg.includes("ECONNREFUSED") ||
+    msg.includes("querySrv") ||
+    msg.includes("database") ||
+    msg.includes("MongoDB") ||
+    msg.includes("connect")
+  ) {
+    return "We couldn't send your enquiry right now. Please try again in a moment or email us directly.";
+  }
+  if (
+    msg.includes("Invalid input") ||
+    msg.includes("expected") ||
+    msg.includes("Zod") ||
+    msg.includes("validation")
+  ) {
+    return "Please check your form details and try again.";
+  }
+  if (msg.includes("Unauthorized")) {
+    return "Something went wrong. Please refresh and try again.";
+  }
+  return "Something went wrong. Please try again.";
+}
+
 export function useEnquirySubmit() {
   const [status, setStatus] = useState<EnquiryStatus>("idle");
   const [error, setError] = useState<string | null>(null);
-  // One idempotency key per form mount — survives re-renders, resets on page reload.
-  const idempotencyKey = useRef(crypto.randomUUID());
+  // Lazy-initialised once per component mount — stable across re-renders
+  const idempotencyKey = useRef<string | null>(null);
+  if (idempotencyKey.current === null) {
+    idempotencyKey.current = generateKey();
+  }
 
   const submit = useCallback(
     async (formData: EnquiryFormData) => {
@@ -26,18 +65,12 @@ export function useEnquirySubmit() {
       setError(null);
       try {
         await submitProjectEnquiry({
-          data: { ...formData, idempotencyKey: idempotencyKey.current },
+          data: { ...formData, idempotencyKey: idempotencyKey.current! },
         });
         setStatus("success");
       } catch (err) {
         setStatus("error");
-        const msg = err instanceof Error ? err.message : "";
-        // Hide technical DB errors from the user
-        if (msg.includes("ECONNREFUSED") || msg.includes("querySrv") || msg.includes("database")) {
-          setError("We couldn't send your enquiry right now. Please try again in a moment or email us directly.");
-        } else {
-          setError(msg || "Something went wrong. Please try again.");
-        }
+        setError(sanitizeError(err));
       }
     },
     [status],
