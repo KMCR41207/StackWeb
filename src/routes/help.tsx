@@ -43,8 +43,8 @@ const faqGroups = [
         a: "Projects are quoted as a fixed price once we understand the scope. Small sites typically start in the low four figures; bigger builds scale from there. No hourly surprises, ever.",
       },
       {
-        q: "Do you work with clients outside the UK?",
-        a: "Yes. Most of our clients are outside the UK. We work async over email and short video calls, and we have shipped to clients across Europe, North America, the Middle East, and South Asia.",
+        q: "Do you work with clients outside India?",
+        a: "Yes. Most of our clients are based globally. We work async over email and short video calls, and we have shipped to clients across Europe, North America, the Middle East, and South Asia.",
       },
     ],
   },
