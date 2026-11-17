@@ -40,8 +40,13 @@ function AdminLoginPage() {
       const result = await adminLogin({ data: { username, password } });
       sessionStorage.setItem("sw_admin_token", result.token);
       await router.navigate({ to: "/admin" });
-    } catch {
-      setError("Invalid credentials. Try again.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.includes("credentials") || msg.includes("Unauthorized")) {
+        setError("Invalid username or password.");
+      } else {
+        setError("Could not connect. Check your connection and try again.");
+      }
     } finally {
       setLoading(false);
     }
