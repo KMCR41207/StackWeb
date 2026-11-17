@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { connectDB } from "./db";
 import { Enquiry } from "./enquiry.model";
+import { verifyToken } from "./auth.server";
 
 const enquirySchema = z.object({
   name:           z.string().trim().min(1).max(160),
@@ -13,6 +15,16 @@ const enquirySchema = z.object({
   details:        z.string().trim().min(1).max(10000),
   idempotencyKey: z.string().uuid(),
 });
+
+/** Verify admin token from request header or body token field */
+function requireAdmin(token?: string): void {
+  const req = getRequest();
+  const headerToken = req.headers.get("x-admin-token") ?? "";
+  const t = token || headerToken;
+  if (!t || !verifyToken(t)) {
+    throw new Error("Unauthorized.");
+  }
+}
 
 export const submitProjectEnquiry = createServerFn({ method: "POST" })
   .validator((input) => enquirySchema.parse(input))
@@ -36,34 +48,46 @@ export const submitProjectEnquiry = createServerFn({ method: "POST" })
     return { id: String(enquiry._id) };
   });
 
-export const getEnquiries = createServerFn({ method: "GET" }).handler(async () => {
-  await connectDB();
+export const getEnquiries = createServerFn({ method: "POST" })
+  .validator((input) => z.object({ token: z.string() }).parse(input))
+  .handler(async ({ data }) => {
+    requireAdmin(data.token);
+    await connectDB();
 
-  const enquiries = await Enquiry.find().sort({ createdAt: -1 }).lean();
+    const enquiries = await Enquiry.find().sort({ createdAt: -1 }).lean();
 
-  return enquiries.map((e) => ({
-    id:           String(e._id),
-    name:         e.name,
-    company:      e.company,
-    email:        e.email,
-    project_type: e.projectType,
-    budget:       e.budget,
-    timeline:     e.timeline,
-    details:      e.details,
-    created_at:   e.createdAt.toISOString(),
-    status:       e.status,
-  }));
-});
+    return enquiries.map((e) => ({
+      id:           String(e._id),
+      name:         e.name,
+      company:      e.company,
+      email:        e.email,
+      project_type: e.projectType,
+      budget:       e.budget,
+      timeline:     e.timeline,
+      details:      e.details,
+      created_at:   e.createdAt.toISOString(),
+      status:       e.status,
+    }));
+  });
 
 export const updateEnquiryStatus = createServerFn({ method: "POST" })
   .validator((input) =>
     z.object({
       id:     z.string().min(1),
       status: z.enum(["New", "In progress", "Closed"]),
+      token:  z.string(),
     }).parse(input)
   )
   .handler(async ({ data }) => {
+    requireAdmin(data.token);
     await connectDB();
-    await Enquiry.findByIdAndUpdate(data.id, { status: data.status });
+
+    const updated = await Enquiry.findByIdAndUpdate(
+      data.id,
+      { status: data.status },
+      { new: true }
+    ).lean();
+
+    if (!updated) throw new Error("Enquiry not found.");
     return { ok: true };
   });
