@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Mail, RefreshCw, LogOut } from "lucide-react";
 import { getEnquiries, updateEnquiryStatus } from "@/lib/enquiries.server";
@@ -29,11 +29,9 @@ export const Route = createFileRoute("/admin")({
     ],
   }),
   loader: async () => {
-    try {
-      return { enquiries: await getEnquiries() as Enquiry[], error: null };
-    } catch (e) {
-      return { enquiries: [] as Enquiry[], error: e instanceof Error ? e.message : "Failed to load" };
-    }
+    // Loader runs server-side — auth is enforced when getEnquiries is called with token
+    // The token is not available server-side during SSR, so we return empty and load client-side
+    return { enquiries: [] as Enquiry[], error: null };
   },
   component: AdminPage,
 });
@@ -44,15 +42,19 @@ const statusColour: Record<string, string> = {
   "Closed":      "bg-muted text-muted-foreground",
 };
 
-function EnquiryRow({ e, onStatusChange }: { e: Enquiry; onStatusChange: (id: string, s: string) => void }) {
+function EnquiryRow({ e, token, onStatusChange }: { e: Enquiry; token: string; onStatusChange: (id: string, s: string) => void }) {
   const [open, setOpen] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   async function handleStatus(status: "New" | "In progress" | "Closed") {
     setUpdating(true);
+    setUpdateError(null);
     try {
-      await updateEnquiryStatus({ data: { id: e.id, status } });
+      await updateEnquiryStatus({ data: { id: e.id, status, token } });
       onStatusChange(e.id, status);
+    } catch {
+      setUpdateError("Failed to update status. Please try again.");
     } finally {
       setUpdating(false);
     }
@@ -174,6 +176,7 @@ function EnquiryRow({ e, onStatusChange }: { e: Enquiry; onStatusChange: (id: st
               </button>
             ))}
             {updating && <RefreshCw className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
+            {updateError && <p className="text-xs text-destructive">{updateError}</p>}
 
             <a
               href={`mailto:${e.email}?subject=Re: Your Stackweb project enquiry&body=Hi ${e.name},%0D%0A%0D%0AThank you for reaching out to Stackweb.%0D%0A%0D%0A`}
@@ -190,26 +193,40 @@ function EnquiryRow({ e, onStatusChange }: { e: Enquiry; onStatusChange: (id: st
 }
 
 function AdminPage() {
-  const { enquiries: initial, error } = Route.useLoaderData();
-  const [enquiries, setEnquiries] = useState<Enquiry[]>(initial);
-  const [authChecked, setAuthChecked] = useState(false);
   const router = useRouter();
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [token, setToken] = useState("");
 
-  // Client-side auth check — redirect to login if no valid token
+  async function loadEnquiries(tok: string) {
+    setLoadError(null);
+    try {
+      const data = await getEnquiries({ data: { token: tok } }) as Enquiry[];
+      setEnquiries(data);
+    } catch (e) {
+      setLoadError(e instanceof Error ? e.message : "Failed to load enquiries.");
+    }
+  }
+
+  // Client-side auth check then load data
   useEffect(() => {
-    const token = sessionStorage.getItem("sw_admin_token");
-    if (!token) {
+    const tok = sessionStorage.getItem("sw_admin_token") ?? "";
+    if (!tok) {
       router.navigate({ to: "/admin-login" });
       return;
     }
-    validateAdminToken({ data: { token } }).then((res) => {
+    validateAdminToken({ data: { token: tok } }).then((res) => {
       if (!res.authenticated) {
         sessionStorage.removeItem("sw_admin_token");
         router.navigate({ to: "/admin-login" });
       } else {
+        setToken(tok);
         setAuthChecked(true);
+        loadEnquiries(tok);
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   function handleStatusChange(id: string, status: string) {
@@ -219,6 +236,10 @@ function AdminPage() {
   function handleSignOut() {
     sessionStorage.removeItem("sw_admin_token");
     router.navigate({ to: "/admin-login" });
+  }
+
+  function handleRefresh() {
+    if (token) loadEnquiries(token);
   }
 
   if (!authChecked) {
@@ -251,7 +272,7 @@ function AdminPage() {
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => router.invalidate()}
+              onClick={handleRefresh}
               className="inline-flex items-center gap-2 border border-hairline px-4 py-2 text-[11px] tracking-[0.14em] uppercase text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
             >
               <RefreshCw className="h-3.5 w-3.5" />
@@ -286,9 +307,9 @@ function AdminPage() {
         </dl>
 
         {/* Error state */}
-        {error && (
+        {loadError && (
           <div className="mt-8 border border-destructive/40 bg-destructive/10 px-6 py-4 text-sm text-destructive">
-            Database error: {error}
+            Failed to load enquiries. {loadError}
           </div>
         )}
 
@@ -303,12 +324,12 @@ function AdminPage() {
 
           {enquiries.length === 0 ? (
             <div className="px-6 py-16 text-center text-sm text-muted-foreground">
-              {error ? "Could not load enquiries." : "No enquiries yet."}
+              {loadError ? "Could not load enquiries." : "No enquiries yet."}
             </div>
           ) : (
             <ul>
               {enquiries.map((e) => (
-                <EnquiryRow key={e.id} e={e} onStatusChange={handleStatusChange} />
+                <EnquiryRow key={e.id} e={e} token={token} onStatusChange={handleStatusChange} />
               ))}
             </ul>
           )}
