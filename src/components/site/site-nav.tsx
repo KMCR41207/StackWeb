@@ -99,20 +99,20 @@ export function SiteNav() {
               {open ? (
                 <motion.span
                   key="close"
-                  initial={{ rotate: -45, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 45, opacity: 0 }}
-                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  initial={{ rotate: -45, opacity: 0, scale: 0.8 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: 45, opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <X className="h-5 w-5" />
                 </motion.span>
               ) : (
                 <motion.span
                   key="open"
-                  initial={{ rotate: 45, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -45, opacity: 0 }}
-                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  initial={{ rotate: 45, opacity: 0, scale: 0.8 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: -45, opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Menu className="h-5 w-5" />
                 </motion.span>
@@ -129,10 +129,10 @@ export function SiteNav() {
             ref={menuRef}
             id="mobile-menu"
             key="mobile-menu"
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="border-t border-hairline bg-background/95 backdrop-blur-md md:hidden"
             style={{ willChange: "opacity, transform" }}
           >
