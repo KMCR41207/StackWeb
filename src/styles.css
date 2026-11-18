@@ -192,7 +192,7 @@
     background: currentColor;
     transform: scaleX(0);
     transform-origin: right;
-    transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+    transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
     will-change: transform;
   }
   &:hover::after,
@@ -213,8 +213,8 @@
     position: absolute;
     inset: 0;
     background: var(--color-foreground);
-    transform: translateY(101%);
-    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+    transform: translateY(102%);
+    transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1);
     will-change: transform;
     z-index: -1;
   }
@@ -248,12 +248,21 @@
 
 /* Card border that illuminates on hover */
 @utility card-hover {
-  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   &:hover {
-    border-color: oklch(0.949 0.008 84 / 28%);
-    box-shadow: 0 0 0 1px oklch(0.949 0.008 84 / 8%),
-                0 20px 60px -20px rgba(0, 0, 0, 0.6);
+    border-color: oklch(0.949 0.008 84 / 32%);
+    box-shadow: 0 0 0 1px oklch(0.949 0.008 84 / 10%),
+                0 24px 72px -20px rgba(0, 0, 0, 0.65);
+  }
+}
+
+/* Smooth image scale on parent hover */
+@utility img-hover {
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  &:hover {
+    transform: scale(1.025);
   }
 }
 
