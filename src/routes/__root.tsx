@@ -9,11 +9,25 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, useCallback, lazy, Suspense, type ReactNode } from "react";
+import { motion, useScroll, useSpring } from "motion/react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNav } from "@/components/site/site-nav";
 import { SiteFooter } from "@/components/site/site-footer";
+
+/** Thin cobalt progress bar that tracks scroll position */
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-primary"
+      style={{ scaleX, willChange: "transform" }}
+      aria-hidden="true"
+    />
+  );
+}
 
 function NotFoundComponent() {
   return (
@@ -221,6 +235,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollProgressBar />
       {introActive && pathname === "/" && (
         <Suspense fallback={null}>
           <LazyIntroOverlay onComplete={handleIntroComplete} />
