@@ -89,9 +89,9 @@ export function Hero() {
           {/* Value-prop headline */}
           <motion.p
             className="display text-[clamp(3rem,10.5vw,9.5rem)] leading-[0.88]"
-            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 50 }}
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             Custom websites,
             <br />
@@ -123,9 +123,9 @@ export function Hero() {
           {/* Project thumbnail strip — 1 col on tiny, 3 cols sm+ */}
           <motion.div
             className="mt-14 grid grid-cols-1 gap-3 xs:grid-cols-3 sm:grid-cols-3 lg:mt-20 lg:gap-5"
-            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 30 }}
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.85, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
             {projects.slice(0, 3).map((p) => (
               <Link key={p.slug} to="/designs" hash={p.slug} className="group block">
@@ -277,7 +277,7 @@ const steps = [
 export function Process() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 65%", "end 75%"] });
-  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.4 });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.3 });
 
   return (
     <section className="border-t border-hairline px-5 py-24 sm:px-8 lg:py-32">
